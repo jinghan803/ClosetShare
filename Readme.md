@@ -277,7 +277,7 @@ ClosetShare
 
 ### Clothing Details
 
-![Clothing Details](public/image/clothing%20detail.png)
+![Clothing Details](public/image/borrow%20detail.png)
 
 ---
 
