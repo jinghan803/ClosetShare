@@ -289,7 +289,7 @@ ClosetShare
 
 ### User Profile
 
-![User Profile](public/image/user%20profile.png)
+![User Profile](public/image/个人简介.png)
 
 ---
 
