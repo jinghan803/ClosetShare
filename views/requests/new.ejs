@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <title>Borrow Request</title>
+</head>
+
+<body>
+
+  <%- include("../partials/navbar") %>
+
+  <main class="borrow-request-page">
+
+    <section class="borrow-request-card">
+
+      <!-- 顶部深色标题栏 -->
+      <div class="borrow-request-header">
+
+        <h1>
+          Borrow Request
+        </h1>
+
+      </div>
+
+
+      <!-- 错误提示 -->
+      <% if (
+        typeof error !== "undefined" &&
+        error
+      ) { %>
+
+        <div class="borrow-request-error">
+          <%= error %>
+        </div>
+
+      <% } %>
+
+
+      <!-- 表单主体 -->
+      <form
+        action="/requests/<%= item._id %>"
+        method="POST"
+        class="borrow-request-form"
+      >
+
+        <div class="borrow-request-grid">
+
+          <!-- 左侧：衣服信息 -->
+          <div class="borrow-request-left">
+
+            <div class="borrow-request-row">
+              <label>
+                Clothing Name:
+              </label>
+
+              <div class="borrow-request-static">
+                <%= item.title %>
+              </div>
+            </div>
+
+
+            <div class="borrow-request-row">
+              <label>
+                Category:
+              </label>
+
+              <div class="borrow-request-static">
+                <%= item.category %>
+              </div>
+            </div>
+
+
+            <div class="borrow-request-row">
+              <label>
+                Size:
+              </label>
+
+              <div class="borrow-request-static">
+                <%= item.size %>
+              </div>
+            </div>
+
+
+            <div class="borrow-request-row">
+              <label>
+                Color:
+              </label>
+
+              <div class="borrow-request-static">
+                <%= item.color %>
+              </div>
+            </div>
+
+          </div>
+
+
+          <!-- 右侧：价格和日期 -->
+          <div class="borrow-request-right">
+
+            <div class="borrow-request-row">
+              <label>
+                Rental Price:
+              </label>
+
+              <div class="borrow-request-static">
+                $<%= Number(item.rentalPrice).toFixed(2) %> per day
+              </div>
+            </div>
+
+
+            <div class="borrow-request-row">
+              <label for="startDate">
+                Start Date:
+              </label>
+
+              <input
+                type="date"
+                id="startDate"
+                name="startDate"
+                value="<%=
+                  values && values.startDate
+                    ? values.startDate
+                    : ""
+                %>"
+                required
+              >
+            </div>
+
+
+            <div class="borrow-request-row">
+              <label for="endDate">
+                End Date:
+              </label>
+
+              <input
+                type="date"
+                id="endDate"
+                name="endDate"
+                value="<%=
+                  values && values.endDate
+                    ? values.endDate
+                    : ""
+                %>"
+                required
+              >
+            </div>
+
+
+            <div class="borrow-request-row">
+              <label>
+                Status:
+              </label>
+
+              <div class="borrow-request-static">
+                Request Pending
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Message 横跨整行 -->
+        <div class="borrow-request-message-row">
+
+          <label for="message">
+            Message:
+          </label>
+
+          <textarea
+            id="message"
+            name="message"
+            rows="6"
+            maxlength="500"
+            placeholder="Write a message to the owner"
+          ><%= values && values.message ? values.message : "" %></textarea>
+
+        </div>
+
+
+        <!-- 说明文字 -->
+        <p class="borrow-request-note">
+          Note: Please confirm the borrowing date and leave a clear message for the owner.
+        </p>
+
+
+        <!-- 底部按钮 -->
+        <div class="borrow-request-actions">
+
+          <a
+            href="/items/<%= item._id %>"
+            class="borrow-request-cancel"
+          >
+            Cancel
+          </a>
+
+          <button
+            type="submit"
+            class="borrow-request-submit"
+          >
+            Submit Request
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+  </main>
+
+  <%- include("../partials/footer") %>
+
+</body>
+</html>

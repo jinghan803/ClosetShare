@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <title>Browse Clothing</title>
+</head>
+
+<body>
+
+  <%- include("../partials/navbar") %>
+
+  <%
+    const currentKeyword =
+      typeof keyword !== "undefined"
+        ? keyword
+        : "";
+
+    const currentFilters =
+      typeof filters !== "undefined"
+        ? filters
+        : {
+            category: "",
+            size: "",
+            color: "",
+            condition: "",
+            availability: "",
+            minPrice: "",
+            maxPrice: "",
+            sort: "latest"
+          };
+
+    const hasSearchOrFilters =
+      currentKeyword ||
+      currentFilters.category ||
+      currentFilters.size ||
+      currentFilters.color ||
+      currentFilters.condition ||
+      currentFilters.availability ||
+      currentFilters.minPrice ||
+      currentFilters.maxPrice ||
+      currentFilters.sort !== "latest";
+  %>
+
+
+  <main class="browse-page">
+
+    <!-- 页面顶部标题和搜索框 -->
+    <section class="browse-search-section">
+
+      <div class="browse-page-title">
+        <h1>Browse Clothing</h1>
+
+        <p>
+          Find clothing shared by members of the community.
+        </p>
+      </div>
+
+
+      <!-- 搜索表单 -->
+      <form
+        id="browse-filter-form"
+        class="browse-search-form"
+        action="/items"
+        method="GET"
+      >
+
+        <input
+          type="search"
+          id="search"
+          name="search"
+          value="<%= currentKeyword %>"
+          placeholder="Search by name, brand, or description"
+        >
+
+        <button type="submit">
+          Search
+        </button>
+
+      </form>
+
+    </section>
+
+
+    <!-- 左侧筛选栏和右侧商品列表 -->
+    <div class="browse-content">
+
+      <!-- 左侧筛选栏 -->
+      <aside class="browse-sidebar">
+
+        <div class="filter-heading">
+          <h2>Filters</h2>
+
+          <% if (hasSearchOrFilters) { %>
+            <a href="/items">
+              Reset
+            </a>
+          <% } %>
+        </div>
+
+
+        <!-- 类别筛选 -->
+        <div class="filter-group">
+
+          <label for="category">
+            Category
+          </label>
+
+          <select
+            id="category"
+            name="category"
+            form="browse-filter-form"
+          >
+            <option value="">
+              All Categories
+            </option>
+
+            <% [
+              "T-Shirt",
+              "Shirt",
+              "Sweater",
+              "Hoodie",
+              "Jacket",
+              "Coat",
+              "Jeans",
+              "Pants",
+              "Shorts",
+              "Skirt",
+              "Dress",
+              "Shoes",
+              "Accessories",
+              "Other"
+            ].forEach(category => { %>
+
+              <option
+                value="<%= category %>"
+                <%= currentFilters.category === category
+                  ? "selected"
+                  : ""
+                %>
+              >
+                <%= category %>
+              </option>
+
+            <% }) %>
+          </select>
+
+        </div>
+
+
+        <!-- 尺码筛选 -->
+        <div class="filter-group">
+
+          <label for="size">
+            Size
+          </label>
+
+          <select
+            id="size"
+            name="size"
+            form="browse-filter-form"
+          >
+            <option value="">
+              All Sizes
+            </option>
+
+            <% [
+              "XXS",
+              "XS",
+              "S",
+              "M",
+              "L",
+              "XL",
+              "XXL",
+              "XXXL",
+              "One Size"
+            ].forEach(size => { %>
+
+              <option
+                value="<%= size %>"
+                <%= currentFilters.size === size
+                  ? "selected"
+                  : ""
+                %>
+              >
+                <%= size %>
+              </option>
+
+            <% }) %>
+          </select>
+
+        </div>
+
+
+        <!-- 颜色筛选 -->
+        <div class="filter-group">
+
+          <label for="color">
+            Color
+          </label>
+
+          <select
+            id="color"
+            name="color"
+            form="browse-filter-form"
+          >
+            <option value="">
+              All Colors
+            </option>
+
+            <% [
+              "Black",
+              "White",
+              "Gray",
+              "Red",
+              "Orange",
+              "Yellow",
+              "Green",
+              "Blue",
+              "Purple",
+              "Pink",
+              "Brown",
+              "Beige",
+              "Multicolor"
+            ].forEach(color => { %>
+
+              <option
+                value="<%= color %>"
+                <%= currentFilters.color === color
+                  ? "selected"
+                  : ""
+                %>
+              >
+                <%= color %>
+              </option>
+
+            <% }) %>
+          </select>
+
+        </div>
+
+
+        <!-- 新旧程度筛选 -->
+        <div class="filter-group">
+
+          <label for="condition">
+            Condition
+          </label>
+
+          <select
+            id="condition"
+            name="condition"
+            form="browse-filter-form"
+          >
+            <option value="">
+              All Conditions
+            </option>
+
+            <% [
+              "New With Tags",
+              "New Without Tags",
+              "Like New",
+              "Good",
+              "Fair",
+              "Poor"
+            ].forEach(condition => { %>
+
+              <option
+                value="<%= condition %>"
+                <%= currentFilters.condition === condition
+                  ? "selected"
+                  : ""
+                %>
+              >
+                <%= condition %>
+              </option>
+
+            <% }) %>
+          </select>
+
+        </div>
+
+
+        <!-- 是否可借 -->
+        <div class="filter-group">
+
+          <label for="availability">
+            Availability
+          </label>
+
+          <select
+            id="availability"
+            name="availability"
+            form="browse-filter-form"
+          >
+
+            <option
+              value=""
+              <%= currentFilters.availability === ""
+                ? "selected"
+                : ""
+              %>
+            >
+              All Items
+            </option>
+
+            <option
+              value="true"
+              <%= currentFilters.availability === "true"
+                ? "selected"
+                : ""
+              %>
+            >
+              Available
+            </option>
+
+            <option
+              value="false"
+              <%= currentFilters.availability === "false"
+                ? "selected"
+                : ""
+              %>
+            >
+              Unavailable
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- 价格范围 -->
+        <div class="filter-group">
+
+          <label>
+            Price Range
+          </label>
+
+          <div class="price-filter-row">
+
+            <input
+              type="number"
+              id="minPrice"
+              name="minPrice"
+              form="browse-filter-form"
+              min="0"
+              step="0.01"
+              value="<%= currentFilters.minPrice %>"
+              placeholder="Minimum"
+            >
+
+            <span>—</span>
+
+            <input
+              type="number"
+              id="maxPrice"
+              name="maxPrice"
+              form="browse-filter-form"
+              min="0"
+              step="0.01"
+              value="<%= currentFilters.maxPrice %>"
+              placeholder="Maximum"
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- 排序 -->
+        <div class="filter-group">
+
+          <label for="sort">
+            Sort By
+          </label>
+
+          <select
+            id="sort"
+            name="sort"
+            form="browse-filter-form"
+          >
+
+            <option
+              value="latest"
+              <%= currentFilters.sort === "latest"
+                ? "selected"
+                : ""
+              %>
+            >
+              Newest
+            </option>
+
+            <option
+              value="price-low"
+              <%= currentFilters.sort === "price-low"
+                ? "selected"
+                : ""
+              %>
+            >
+              Price: Low to High
+            </option>
+
+            <option
+              value="price-high"
+              <%= currentFilters.sort === "price-high"
+                ? "selected"
+                : ""
+              %>
+            >
+              Price: High to Low
+            </option>
+
+            <option
+              value="rating-high"
+              <%= currentFilters.sort === "rating-high"
+                ? "selected"
+                : ""
+              %>
+            >
+              Highest Rated
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- 筛选按钮 -->
+        <div class="filter-buttons">
+
+          <button
+            type="submit"
+            form="browse-filter-form"
+            class="apply-filter-button"
+          >
+            Apply Filters
+          </button>
+
+          <a
+            href="/items"
+            class="clear-filter-button"
+          >
+            Clear All
+          </a>
+
+        </div>
+
+      </aside>
+
+
+      <!-- 右侧商品列表 -->
+      <section class="browse-results">
+
+        <div class="results-heading">
+
+          <div>
+            <h2>Available Clothing</h2>
+
+            <% if (currentKeyword) { %>
+              <p>
+                Showing results for
+                "<strong><%= currentKeyword %></strong>"
+              </p>
+            <% } else { %>
+              <p>
+                Browse recently shared clothing.
+              </p>
+            <% } %>
+          </div>
+
+          <span class="results-count">
+            <%= items.length %>
+            <%= items.length === 1 ? "item" : "items" %>
+          </span>
+
+        </div>
+
+
+        <!-- 没有查询结果 -->
+        <% if (items.length === 0) { %>
+
+          <div class="no-results-card">
+
+            <% if (hasSearchOrFilters) { %>
+
+              <h2>No clothing items found</h2>
+
+              <p>
+                No clothing items matched your search or filters.
+              </p>
+
+              <a href="/items">
+                View All Clothing
+              </a>
+
+            <% } else { %>
+
+              <h2>No clothing items yet</h2>
+
+              <p>
+                No clothing items have been posted yet.
+              </p>
+
+              <a href="/items/new">
+                Post the First Clothing Item
+              </a>
+
+            <% } %>
+
+          </div>
+
+        <% } else { %>
+
+          <!-- 商品网格 -->
+          <div class="browse-items-grid">
+
+            <% items.forEach(item => { %>
+
+              <article class="browse-item-card">
+
+                <!-- 商品图片 -->
+                <div class="browse-item-image">
+
+                  <a href="/items/<%= item._id %>">
+
+                    <% if (item.imageUrl) { %>
+
+                      <img
+                        src="<%= item.imageUrl %>"
+                        alt="<%= item.title %>"
+                        loading="lazy"
+                      >
+
+                    <% } else { %>
+
+                      <div class="browse-image-placeholder">
+                        <span>No Image</span>
+                      </div>
+
+                    <% } %>
+
+                  </a>
+
+
+                  <!-- 商品状态 -->
+                  <span
+                    class="
+                      item-status-badge
+                      <%= item.isAvailable
+                        ? "status-available"
+                        : "status-unavailable"
+                      %>
+                    "
+                  >
+                    <%= item.isAvailable
+                      ? "Available"
+                      : "Unavailable"
+                    %>
+                  </span>
+
+                </div>
+
+
+                <!-- 商品信息 -->
+                <div class="browse-item-information">
+
+                  <div class="item-top-row">
+
+                    <span class="item-category">
+                      <%= item.category %>
+                    </span>
+
+                    <span class="item-size">
+                      Size <%= item.size %>
+                    </span>
+
+                  </div>
+
+
+                  <h2 class="browse-item-title">
+                    <a href="/items/<%= item._id %>">
+                      <%= item.title %>
+                    </a>
+                  </h2>
+
+
+                  <div class="item-basic-information">
+
+                    <p>
+                      <strong>Color:</strong>
+                      <%= item.color %>
+                    </p>
+
+                    <p>
+                      <strong>Condition:</strong>
+                      <%= item.condition %>
+                    </p>
+
+                  </div>
+
+
+                  <div class="item-rating-row">
+
+                    <span class="item-rating">
+
+                      <% if (
+                        item.ratingCount &&
+                        item.ratingCount > 0
+                      ) { %>
+
+                        ★
+                        <%= Number(
+                          item.averageRating
+                        ).toFixed(1) %>
+
+                        <small>
+                          (<%= item.ratingCount %>)
+                        </small>
+
+                      <% } else { %>
+
+                        No ratings yet
+
+                      <% } %>
+
+                    </span>
+
+                  </div>
+
+
+                  <div class="item-bottom-row">
+
+                    <div class="item-price">
+
+                      <small>Rental Price</small>
+
+                      <strong>
+                        $<%= Number(
+                          item.rentalPrice
+                        ).toFixed(2) %>
+                      </strong>
+
+                    </div>
+
+                    <a
+                      href="/items/<%= item._id %>"
+                      class="view-item-button"
+                    >
+                      View Item
+                    </a>
+
+                  </div>
+
+                </div>
+
+              </article>
+
+            <% }) %>
+
+          </div>
+
+        <% } %>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <%- include("../partials/footer") %>
+
+</body>
+</html>

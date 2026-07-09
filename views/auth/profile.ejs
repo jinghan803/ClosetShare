@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <title>Profile</title>
+</head>
+
+<body>
+
+  <%- include("../partials/navbar") %>
+
+
+  <main class="profile-page">
+
+    <!-- 个人资料卡片 -->
+    <section class="profile-card">
+
+      <h1 class="profile-page-title">
+        Personal Information
+      </h1>
+
+
+      <div class="profile-information">
+
+        <!-- 头像 -->
+        <div class="profile-information-row avatar-row">
+
+          <span class="profile-information-label">
+            Avatar
+          </span>
+
+          <div class="profile-information-value">
+
+            <% if (user.avatarUrl) { %>
+
+              <img
+                src="<%= user.avatarUrl %>"
+                alt="<%= user.username %>'s avatar"
+                class="profile-page-avatar"
+              >
+
+            <% } else { %>
+
+              <div class="profile-page-avatar-fallback">
+                <%= user.username
+                  ? user.username.charAt(0).toUpperCase()
+                  : "U"
+                %>
+              </div>
+
+            <% } %>
+
+          </div>
+
+        </div>
+
+
+        <!-- Username -->
+        <div class="profile-information-row">
+
+          <span class="profile-information-label">
+            Username
+          </span>
+
+          <span class="profile-information-value">
+            <%= user.username %>
+          </span>
+
+        </div>
+
+
+        <!-- Email -->
+        <div class="profile-information-row">
+
+          <span class="profile-information-label">
+            Email
+          </span>
+
+          <span class="profile-information-value">
+            <%= user.email %>
+          </span>
+
+        </div>
+
+
+        <!-- Bio -->
+        <div class="profile-information-row">
+
+          <span class="profile-information-label">
+            Bio
+          </span>
+
+          <span class="profile-information-value">
+            <%= user.bio || "No bio provided." %>
+          </span>
+
+        </div>
+
+
+        <!-- Usual Size -->
+        <div class="profile-information-row">
+
+          <span class="profile-information-label">
+            Usual Size
+          </span>
+
+          <span class="profile-information-value">
+            <%= user.usualSize || "Not specified" %>
+          </span>
+
+        </div>
+
+
+        <!-- Preferred Style -->
+        <div class="profile-information-row">
+
+          <span class="profile-information-label">
+            Preferred Style
+          </span>
+
+          <span class="profile-information-value">
+            <%= user.preferredStyle || "Not specified" %>
+          </span>
+
+        </div>
+
+
+        <!-- Rating -->
+        <div class="profile-information-row">
+
+          <span class="profile-information-label">
+            Rating
+          </span>
+
+          <span class="profile-information-value">
+
+            <% if (
+              user.ratingCount &&
+              user.ratingCount > 0
+            ) { %>
+
+              <%= Number(user.averageRating).toFixed(1) %> / 5
+
+              <small>
+                (<%= user.ratingCount %>
+                <%= user.ratingCount === 1
+                  ? "rating"
+                  : "ratings"
+                %>)
+              </small>
+
+            <% } else { %>
+
+              No ratings yet
+
+            <% } %>
+
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <a
+        href="/profile/edit"
+        class="profile-edit-button"
+      >
+        Edit Profile
+      </a>
+
+    </section>
+
+
+    <!-- 我的衣服 -->
+    <section class="profile-items-section">
+
+      <div class="profile-items-heading">
+
+        <h2>
+          My Clothing Items
+        </h2>
+
+        <a
+          href="/items/new"
+          class="profile-share-button"
+        >
+          Share Clothing
+        </a>
+
+      </div>
+
+
+      <% if (items.length === 0) { %>
+
+        <div class="profile-empty-items">
+
+          <p>
+            You have not posted any clothing items yet.
+          </p>
+
+          <a href="/items/new">
+            Share Your First Clothing Item
+          </a>
+
+        </div>
+
+      <% } else { %>
+
+        <div class="profile-items-grid">
+
+          <% items.forEach(item => { %>
+
+            <article class="profile-item-card">
+
+              <a
+                href="/items/<%= item._id %>"
+                class="profile-item-image-link"
+              >
+
+                <% if (item.imageUrl) { %>
+
+                  <img
+                    src="<%= item.imageUrl %>"
+                    alt="<%= item.title %>"
+                    class="profile-item-image"
+                  >
+
+                <% } else { %>
+
+                  <div class="profile-item-placeholder">
+                    No Image
+                  </div>
+
+                <% } %>
+
+              </a>
+
+
+              <div class="profile-item-content">
+
+                <h3>
+                  <a href="/items/<%= item._id %>">
+                    <%= item.title %>
+                  </a>
+                </h3>
+
+
+                <div class="profile-item-details">
+
+                  <p>
+                    <strong>Category</strong>
+                    <span><%= item.category %></span>
+                  </p>
+
+                  <p>
+                    <strong>Status</strong>
+
+                    <span
+                      class="<%=
+                        item.isAvailable
+                          ? 'profile-item-available'
+                          : 'profile-item-unavailable'
+                      %>"
+                    >
+                      <%= item.isAvailable
+                        ? "Available"
+                        : "Unavailable"
+                      %>
+                    </span>
+                  </p>
+
+                  <p>
+                    <strong>Rental Price</strong>
+
+                    <span>
+                      $<%= Number(
+                        item.rentalPrice
+                      ).toFixed(2) %>
+                    </span>
+                  </p>
+
+                </div>
+
+
+                <a
+                  href="/items/<%= item._id %>"
+                  class="profile-view-item-button"
+                >
+                  View Item
+                </a>
+
+              </div>
+
+            </article>
+
+          <% }) %>
+
+        </div>
+
+      <% } %>
+
+    </section>
+
+  </main>
+
+
+  <%- include("../partials/footer") %>
+
+</body>
+</html>

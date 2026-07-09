@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+  <link rel="stylesheet" href="/css/style.css">
+
+  <title>Review Clothing</title>
+</head>
+
+<body>
+  <%- include("../partials/navbar") %>
+
+  <main>
+    <h1>Review Clothing</h1>
+
+    <h2>
+      <%= item.title %>
+    </h2>
+
+    <p>
+      <strong>Borrowing Status:</strong>
+      <%= borrowRequest.status %>
+    </p>
+
+    <% if (error) { %>
+      <p>
+        <%= error %>
+      </p>
+    <% } %>
+
+    <form
+      action="/reviews/<%= borrowRequest._id %>"
+      method="POST"
+    >
+      <div>
+        <label for="rating">
+          Rating
+        </label>
+
+        <select
+          id="rating"
+          name="rating"
+          required
+        >
+          <option value="">
+            Select a rating
+          </option>
+
+          <% [1, 2, 3, 4, 5].forEach(number => { %>
+            <option
+              value="<%= number %>"
+              <%= String(values.rating) ===
+                  String(number)
+                ? "selected"
+                : ""
+              %>
+            >
+              <%= number %> Star<%= number > 1 ? "s" : "" %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div>
+        <label for="comment">
+          Comment
+        </label>
+
+        <textarea
+          id="comment"
+          name="comment"
+          rows="6"
+          maxlength="1000"
+          placeholder="Write your review"
+        ><%= values.comment %></textarea>
+      </div>
+
+      <button type="submit">
+        Submit Review
+      </button>
+    </form>
+
+    <a href="/requests/mine">
+      Cancel
+    </a>
+  </main>
+    <%- include("../partials/footer") %>
+</body>
+</html>

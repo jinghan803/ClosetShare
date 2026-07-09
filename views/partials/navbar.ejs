@@ -1,0 +1,250 @@
+<header class="site-header">
+
+  <!-- 顶部：左侧标题，右侧头像 -->
+  <div class="header-top">
+
+    <a href="/" class="site-title">
+      Closet Share
+    </a>
+
+
+    <% if (currentUser) { %>
+
+      <div class="profile-menu">
+
+        <!-- 右上角头像按钮 -->
+        <button
+          type="button"
+          id="profileMenuButton"
+          class="profile-trigger"
+          aria-label="Open profile menu"
+          aria-expanded="false"
+          aria-controls="profileDropdown"
+        >
+
+          <% if (currentUser.avatarUrl) { %>
+
+            <img
+              src="<%= currentUser.avatarUrl %>"
+              alt="<%= currentUser.username %>'s avatar"
+              class="profile-trigger-image"
+            >
+
+          <% } else { %>
+
+            <span class="profile-avatar-fallback">
+              <%= currentUser.username
+                ? currentUser.username.charAt(0).toUpperCase()
+                : "U"
+              %>
+            </span>
+
+          <% } %>
+
+        </button>
+
+
+        <!-- 点击头像后出现的菜单 -->
+        <div
+          id="profileDropdown"
+          class="profile-dropdown"
+          hidden
+        >
+
+          <!-- 用户信息区域 -->
+          <div class="profile-summary">
+
+            <% if (currentUser.avatarUrl) { %>
+
+              <img
+                src="<%= currentUser.avatarUrl %>"
+                alt="<%= currentUser.username %>'s avatar"
+                class="profile-summary-avatar"
+              >
+
+            <% } else { %>
+
+              <div class="profile-summary-fallback">
+                <%= currentUser.username
+                  ? currentUser.username.charAt(0).toUpperCase()
+                  : "U"
+                %>
+              </div>
+
+            <% } %>
+
+
+            <h2>
+              <%= currentUser.username %>
+            </h2>
+
+
+            <% if (currentUser.email) { %>
+              <p>
+                <%= currentUser.email %>
+              </p>
+            <% } %>
+
+          </div>
+
+
+          <!-- 原来的四个导航按钮 -->
+          <div class="profile-menu-links">
+
+            <a href="/profile">
+              <span class="profile-menu-icon">●</span>
+
+              <span>
+                Profile
+              </span>
+            </a>
+
+
+            <a href="/dashboard">
+              <span class="profile-menu-icon">▦</span>
+
+              <span>
+                Dashboard
+              </span>
+            </a>
+
+
+            <a href="/requests/mine">
+              <span class="profile-menu-icon">↗</span>
+
+              <span>
+                My Borrow Requests
+              </span>
+            </a>
+
+
+            <a href="/requests/received">
+              <span class="profile-menu-icon">↙</span>
+
+              <span>
+                Received Requests
+              </span>
+            </a>
+
+          </div>
+
+
+          <!-- 退出登录 -->
+          <div class="profile-menu-footer">
+
+            <form
+              action="/logout"
+              method="POST"
+              class="profile-logout-form"
+            >
+
+              <button
+                type="submit"
+                class="profile-logout-button"
+              >
+                Logout
+              </button>
+
+            </form>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    <% } %>
+
+  </div>
+
+
+  <!-- 下方导航栏 -->
+  <nav class="main-nav">
+
+    <a href="/">
+      Home
+    </a>
+
+    <a href="/items">
+      Browse Clothing
+    </a>
+
+    <a href="/items/new">
+      Share Clothing
+    </a>
+
+
+    <!-- 未登录时仍显示登录和注册 -->
+    <% if (!currentUser) { %>
+
+      <a href="/login">
+        Login
+      </a>
+
+      <a href="/register">
+        Register
+      </a>
+
+    <% } %>
+
+  </nav>
+
+</header>
+
+
+<script>
+  (() => {
+    const profileButton =
+      document.getElementById("profileMenuButton");
+
+    const profileDropdown =
+      document.getElementById("profileDropdown");
+
+    if (!profileButton || !profileDropdown) {
+      return;
+    }
+
+
+    function setProfileMenuOpen(isOpen) {
+      profileDropdown.hidden = !isOpen;
+
+      profileButton.setAttribute(
+        "aria-expanded",
+        String(isOpen)
+      );
+    }
+
+
+    // 点击头像：打开或关闭菜单
+    profileButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+
+      setProfileMenuOpen(
+        profileDropdown.hidden
+      );
+    });
+
+
+    // 点击菜单内部时不要关闭
+    profileDropdown.addEventListener(
+      "click",
+      (event) => {
+        event.stopPropagation();
+      }
+    );
+
+
+    // 点击页面其他位置关闭
+    document.addEventListener("click", () => {
+      setProfileMenuOpen(false);
+    });
+
+
+    // 按 Escape 关闭
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        setProfileMenuOpen(false);
+      }
+    });
+  })();
+</script>

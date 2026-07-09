@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <title>Login</title>
+</head>
+
+<body>
+
+  <%- include("../partials/navbar") %>
+
+
+  <main class="login-page">
+
+    <section class="login-card">
+
+      <!-- 顶部登录方式 -->
+      <div class="login-tabs">
+
+        <div class="login-tab password-tab">
+          Password Login
+        </div>
+
+        <a
+          href="/auth/google"
+          class="login-tab google-login-tab"
+          aria-label="Continue with Google"
+        >
+          <img
+            src="/image/google-logo.png"
+            alt=""
+            class="google-login-logo"
+          >
+
+          <span>Google Login</span>
+        </a>
+
+      </div>
+
+
+      <!-- 登录框内部内容 -->
+      <div class="login-card-content">
+
+        <h1>Login</h1>
+
+        <p class="login-description">
+          Welcome back to Closet Share
+        </p>
+
+
+        <!-- 注册成功信息 -->
+        <% if (
+          typeof registered !== "undefined" &&
+          registered
+        ) { %>
+
+          <div class="login-message login-success">
+            Registration successful. You can now log in.
+          </div>
+
+        <% } %>
+
+
+        <!-- 登录错误信息 -->
+        <% if (
+          typeof error !== "undefined" &&
+          error
+        ) { %>
+
+          <div class="login-message login-error">
+            <%= error %>
+          </div>
+
+        <% } %>
+
+
+        <!-- 邮箱密码登录表单 -->
+        <form
+          action="/login"
+          method="POST"
+          class="login-form"
+        >
+
+          <div class="login-input-group">
+
+            <label for="email">
+              Email
+            </label>
+
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value="<%=
+                typeof values !== "undefined" &&
+                values.email
+                  ? values.email
+                  : ""
+              %>"
+              placeholder="Enter your email"
+              autocomplete="email"
+              required
+            >
+
+          </div>
+
+
+          <div class="login-input-group">
+
+            <label for="password">
+              Password
+            </label>
+
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            >
+
+          </div>
+
+
+          <button
+            type="submit"
+            class="login-submit-button"
+          >
+            Login
+          </button>
+
+        </form>
+
+
+        <p class="login-register-text">
+          Do not have an account?
+
+          <a href="/register">
+            Register
+          </a>
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <%- include("../partials/footer") %>
+
+</body>
+</html>

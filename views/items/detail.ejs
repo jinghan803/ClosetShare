@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <title><%= item.title %></title>
+</head>
+
+<body>
+
+  <%- include("../partials/navbar") %>
+
+  <main class="item-detail-page">
+
+    <!-- 顶部主人信息栏 -->
+    <section class="item-owner-bar">
+
+      <div class="item-owner-info">
+
+        <% if (item.ownerId && item.ownerId.avatarUrl) { %>
+
+          <img
+            src="<%= item.ownerId.avatarUrl %>"
+            alt="<%= item.ownerId.username %>'s avatar"
+            class="item-owner-avatar"
+          >
+
+        <% } else { %>
+
+          <div class="item-owner-avatar-fallback">
+            <%= item.ownerId && item.ownerId.username
+              ? item.ownerId.username.charAt(0).toUpperCase()
+              : "U"
+            %>
+          </div>
+
+        <% } %>
+
+
+        <div class="item-owner-text">
+
+          <span class="item-owner-name">
+            Owner:
+            <strong>
+              <%= item.ownerId && item.ownerId.username
+                ? item.ownerId.username
+                : "Unknown Owner"
+              %>
+            </strong>
+          </span>
+
+          <span class="item-owner-rating">
+            Rating:
+            <% if (
+              item.ownerId &&
+              item.ownerId.ratingCount &&
+              item.ownerId.ratingCount > 0
+            ) { %>
+
+              <strong>
+                <%= Number(item.ownerId.averageRating).toFixed(1) %>
+              </strong>
+              / 5
+
+            <% } else { %>
+
+              <strong>No ratings yet</strong>
+
+            <% } %>
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <a href="/items" class="item-detail-back">
+        Back to Clothing List
+      </a>
+
+    </section>
+
+
+    <!-- 商品主体：左图右详情 -->
+    <section class="item-detail-main">
+
+      <!-- 左侧图片区 -->
+      <div class="item-detail-left">
+
+        <div class="item-detail-image-box">
+
+          <% if (item.imageUrl) { %>
+
+            <img
+              src="<%= item.imageUrl %>"
+              alt="<%= item.title %>"
+              class="item-detail-image"
+            >
+
+          <% } else { %>
+
+            <div class="item-detail-image-placeholder">
+              No Image
+            </div>
+
+          <% } %>
+
+        </div>
+
+      </div>
+
+
+      <!-- 右侧详情区 -->
+      <div class="item-detail-right">
+
+        <h1 class="item-detail-title">
+          <%= item.title %>
+        </h1>
+
+
+        <div class="item-detail-price-row">
+
+          <span class="item-detail-price-label">
+            Rental Price
+          </span>
+
+          <strong class="item-detail-price">
+            $<%= Number(item.rentalPrice).toFixed(2) %>
+          </strong>
+
+        </div>
+
+
+        <div class="item-detail-info-list">
+
+          <p>
+            <strong>Description:</strong>
+            <span><%= item.description %></span>
+          </p>
+
+          <p>
+            <strong>Category:</strong>
+            <span><%= item.category %></span>
+          </p>
+
+          <p>
+            <strong>Size:</strong>
+            <span><%= item.size %></span>
+          </p>
+
+          <p>
+            <strong>Color:</strong>
+            <span><%= item.color %></span>
+          </p>
+
+          <p>
+            <strong>Brand:</strong>
+            <span><%= item.brand %></span>
+          </p>
+
+          <p>
+            <strong>Condition:</strong>
+            <span><%= item.condition %></span>
+          </p>
+
+          <p>
+            <strong>Status:</strong>
+
+            <% if (item.isAvailable) { %>
+              <span class="item-status available">
+                Available
+              </span>
+            <% } else { %>
+              <span class="item-status unavailable">
+                Unavailable
+              </span>
+            <% } %>
+          </p>
+
+          <p>
+            <strong>Average Rating:</strong>
+
+            <% if (
+              item.ratingCount &&
+              item.ratingCount > 0
+            ) { %>
+
+              <span>
+                <%= Number(item.averageRating).toFixed(1) %>
+                / 5
+              </span>
+
+            <% } else { %>
+
+              <span>No ratings yet</span>
+
+            <% } %>
+          </p>
+
+          <p>
+            <strong>Review Count:</strong>
+            <span><%= item.ratingCount || 0 %></span>
+          </p>
+
+          <p>
+            <strong>Posted:</strong>
+
+            <% if (item.createdAt) { %>
+              <span><%= item.createdAt.toLocaleDateString() %></span>
+            <% } else { %>
+              <span>Unknown</span>
+            <% } %>
+          </p>
+
+        </div>
+
+
+        <!-- 操作按钮 -->
+        <div class="item-detail-actions">
+
+          <% if (
+            currentUser &&
+            item.ownerId &&
+            String(item.ownerId._id || item.ownerId) === String(currentUser.id)
+          ) { %>
+
+            <a
+              href="/items/<%= item._id %>/edit"
+              class="item-action-button secondary"
+            >
+              Edit Item
+            </a>
+
+            <form
+              action="/items/<%= item._id %>?_method=DELETE"
+              method="POST"
+              class="item-delete-form"
+            >
+              <button
+                type="submit"
+                class="item-action-button danger"
+                onclick="return confirm('Are you sure you want to delete this item?');"
+              >
+                Delete Item
+              </button>
+            </form>
+
+          <% } %>
+
+
+          <% if (
+            currentUser &&
+            item.ownerId &&
+            String(item.ownerId._id || item.ownerId) !== String(currentUser.id) &&
+            item.isAvailable
+          ) { %>
+
+            <a
+              href="/requests/new/<%= item._id %>"
+              class="item-action-button primary"
+            >
+              Request to Borrow
+            </a>
+
+          <% } %>
+
+
+          <% if (!currentUser && item.isAvailable) { %>
+
+            <a
+              href="/login"
+              class="item-action-button primary"
+            >
+              Log in to request this item
+            </a>
+
+          <% } %>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- 下方 Tabs：只保留 Reviews 和 Similar Items -->
+    <section class="item-detail-tabs">
+
+      <div class="item-tab-header">
+
+        <button
+          type="button"
+          class="item-tab-button active"
+          data-tab-target="reviews-panel"
+        >
+          Reviews
+        </button>
+
+        <button
+          type="button"
+          class="item-tab-button"
+          data-tab-target="similar-panel"
+        >
+          Similar Items
+        </button>
+
+      </div>
+
+
+      <!-- Reviews -->
+      <div
+        id="reviews-panel"
+        class="item-tab-panel active"
+      >
+
+        <% if (reviews.length === 0) { %>
+
+          <p class="item-empty-text">
+            No reviews have been submitted yet.
+          </p>
+
+        <% } else { %>
+
+          <div class="item-review-list">
+
+            <% reviews.forEach(review => { %>
+
+              <article class="item-review-card">
+
+                <div class="item-review-user">
+
+                  <% if (
+                    review.reviewerId &&
+                    review.reviewerId.avatarUrl
+                  ) { %>
+
+                    <img
+                      src="<%= review.reviewerId.avatarUrl %>"
+                      alt="<%= review.reviewerId.username %>'s avatar"
+                      class="item-review-avatar"
+                    >
+
+                  <% } else { %>
+
+                    <div class="item-review-avatar-fallback">
+                      <%= review.reviewerId && review.reviewerId.username
+                        ? review.reviewerId.username.charAt(0).toUpperCase()
+                        : "U"
+                      %>
+                    </div>
+
+                  <% } %>
+
+
+                  <div>
+                    <p class="item-review-name">
+
+                      <% if (review.reviewerId) { %>
+                        <%= review.reviewerId.username %>
+                      <% } else { %>
+                        Unknown User
+                      <% } %>
+
+                    </p>
+
+                    <p class="item-review-date">
+                      <%= review.createdAt.toLocaleDateString() %>
+                    </p>
+                  </div>
+
+                </div>
+
+
+                <div class="item-review-content">
+
+                  <p class="item-review-rating">
+                    ★ <%= review.rating %> / 5
+                  </p>
+
+                  <p class="item-review-comment">
+                    <%= review.comment || "No comment" %>
+                  </p>
+
+                </div>
+
+              </article>
+
+            <% }) %>
+
+          </div>
+
+        <% } %>
+
+      </div>
+
+
+      <!-- Similar Items -->
+      <div
+        id="similar-panel"
+        class="item-tab-panel"
+      >
+
+        <% if (similarItems.length === 0) { %>
+
+          <p class="item-empty-text">
+            No similar clothing items are currently available.
+          </p>
+
+        <% } else { %>
+
+          <div class="item-similar-grid">
+
+            <% similarItems.forEach(result => { %>
+
+              <% const similarItem = result.item; %>
+
+              <article class="item-similar-card">
+
+                <a
+                  href="/items/<%= similarItem._id %>"
+                  class="item-similar-image-link"
+                >
+
+                  <% if (similarItem.imageUrl) { %>
+
+                    <img
+                      src="<%= similarItem.imageUrl %>"
+                      alt="<%= similarItem.title %>"
+                      class="item-similar-image"
+                    >
+
+                  <% } else { %>
+
+                    <div class="item-similar-placeholder">
+                      No Image
+                    </div>
+
+                  <% } %>
+
+                </a>
+
+
+                <div class="item-similar-content">
+
+                  <h3>
+                    <a href="/items/<%= similarItem._id %>">
+                      <%= similarItem.title %>
+                    </a>
+                  </h3>
+
+                  <p>
+                    <strong>Category:</strong>
+                    <%= similarItem.category %>
+                  </p>
+
+                  <p>
+                    <strong>Size:</strong>
+                    <%= similarItem.size %>
+                  </p>
+
+                  <p>
+                    <strong>Color:</strong>
+                    <%= similarItem.color %>
+                  </p>
+
+                  <p>
+                    <strong>Rental:</strong>
+                    $<%= Number(similarItem.rentalPrice).toFixed(2) %>
+                  </p>
+
+                  <p>
+                    <strong>Rating:</strong>
+
+                    <% if (
+                      similarItem.ratingCount &&
+                      similarItem.ratingCount > 0
+                    ) { %>
+
+                      <%= Number(similarItem.averageRating).toFixed(1) %>
+                      / 5
+
+                    <% } else { %>
+
+                      No ratings yet
+
+                    <% } %>
+                  </p>
+
+                </div>
+
+              </article>
+
+            <% }) %>
+
+          </div>
+
+        <% } %>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script>
+    const tabButtons =
+      document.querySelectorAll(".item-tab-button");
+
+    const tabPanels =
+      document.querySelectorAll(".item-tab-panel");
+
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const targetId =
+          button.dataset.tabTarget;
+
+        tabButtons.forEach((item) => {
+          item.classList.remove("active");
+        });
+
+        tabPanels.forEach((panel) => {
+          panel.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        const targetPanel =
+          document.getElementById(targetId);
+
+        if (targetPanel) {
+          targetPanel.classList.add("active");
+        }
+      });
+    });
+  </script>
+
+
+  <%- include("../partials/footer") %>
+
+</body>
+</html>

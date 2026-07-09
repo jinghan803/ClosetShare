@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <title>Share Clothing</title>
+
+  <style>
+    /* Share Clothing 页面 */
+    .share-page {
+      width: 100%;
+      box-sizing: border-box;
+
+      display: flex;
+      justify-content: center;
+
+      padding: 35px 20px 60px;
+    }
+
+    /* 表单外层方框 */
+    .share-card {
+      width: min(850px, 92vw);
+      box-sizing: border-box;
+
+      padding: 30px 38px 35px;
+
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid rgba(156, 96, 96, 0.18);
+      border-radius: 18px;
+
+      box-shadow: 0 10px 28px rgba(70, 70, 70, 0.1);
+    }
+
+    .share-card h1 {
+      margin: 0 0 30px;
+
+      color: #9c6060;
+      text-align: center;
+    }
+
+    /* 整个表单 */
+    .share-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* 每一行：左边标题，右边输入框 */
+    .share-form-row {
+      display: grid;
+      grid-template-columns: 175px minmax(0, 1fr);
+      align-items: center;
+      gap: 22px;
+    }
+
+    .share-form-row label {
+      color: #725757;
+      font-weight: bold;
+      text-align: left;
+    }
+
+    /* 输入框统一样式 */
+    .share-form-row input,
+    .share-form-row select,
+    .share-form-row textarea {
+      width: 100%;
+      box-sizing: border-box;
+
+      color: #5f5050;
+      background: rgba(255, 255, 255, 0.88);
+
+      border: 1px solid rgba(120, 110, 110, 0.4);
+      border-radius: 7px;
+      outline: none;
+
+      font-family: inherit;
+      font-size: inherit;
+
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .share-form-row input,
+    .share-form-row select {
+      height: 44px;
+      padding: 0 13px;
+    }
+
+    .share-form-row textarea {
+      min-height: 105px;
+      padding: 11px 13px;
+
+      resize: vertical;
+    }
+
+    .textarea-row {
+      align-items: start;
+    }
+
+    .textarea-row label {
+      padding-top: 10px;
+    }
+
+    .share-form-row input:focus,
+    .share-form-row select:focus,
+    .share-form-row textarea:focus {
+      border-color: #b97870;
+
+      box-shadow:
+        0 0 0 3px rgba(185, 120, 112, 0.12);
+    }
+
+    /* Other 输入框 */
+    .other-input {
+      display: none;
+      grid-column: 2;
+
+      margin-top: -7px;
+    }
+
+    /* 提交按钮 */
+    .share-form-actions {
+      padding-left: 197px;
+      margin-top: 6px;
+    }
+
+    .share-form-actions button {
+      width: 100%;
+      height: 46px;
+
+      color: white;
+      background: #9c6060;
+
+      border: none;
+      border-radius: 9px;
+
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: bold;
+
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    .share-form-actions button:hover {
+      background: #814c4c;
+      transform: translateY(-2px);
+    }
+
+    /* 返回按钮 */
+    .share-back-link {
+      display: block;
+
+      margin-top: 18px;
+
+      color: #9c6060;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .share-back-link:hover {
+      text-decoration: underline;
+    }
+
+    /* 手机端 */
+    @media (max-width: 650px) {
+      .share-page {
+        padding: 25px 14px 45px;
+      }
+
+      .share-card {
+        width: 94vw;
+        padding: 27px 22px 32px;
+      }
+
+      .share-form-row {
+        grid-template-columns: 1fr;
+        gap: 7px;
+      }
+
+      .textarea-row label {
+        padding-top: 0;
+      }
+
+      .other-input {
+        grid-column: 1;
+        margin-top: 0;
+      }
+
+      .share-form-actions {
+        padding-left: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <%- include("../partials/navbar") %>
+
+  <main class="share-page">
+
+    <section class="share-card">
+
+      <h1>Share Your Clothing</h1>
+
+      <form
+        action="/items"
+        method="POST"
+        class="share-form"
+      >
+
+        <!-- Clothing Name -->
+        <div class="share-form-row">
+
+          <label for="title">
+            Clothing Name:
+          </label>
+
+          <input
+            type="text"
+            id="title"
+            name="title"
+            placeholder="Enter the clothing name"
+            required
+          >
+
+        </div>
+
+
+        <!-- Description -->
+        <div class="share-form-row textarea-row">
+
+          <label for="description">
+            Description:
+          </label>
+
+          <textarea
+            id="description"
+            name="description"
+            rows="5"
+            placeholder="Enter the description"
+            required
+          ></textarea>
+
+        </div>
+
+
+        <!-- Category -->
+        <div class="share-form-row">
+
+          <label for="category">
+            Category:
+          </label>
+
+          <select
+            id="category"
+            name="category"
+            class="select-with-other"
+            data-other-input="categoryOther"
+            required
+          >
+            <option value="">
+              Select a category
+            </option>
+
+            <option value="T-Shirt">T-Shirt</option>
+            <option value="Shirt">Shirt</option>
+            <option value="Sweater">Sweater</option>
+            <option value="Hoodie">Hoodie</option>
+            <option value="Jacket">Jacket</option>
+            <option value="Coat">Coat</option>
+            <option value="Jeans">Jeans</option>
+            <option value="Pants">Pants</option>
+            <option value="Shorts">Shorts</option>
+            <option value="Skirt">Skirt</option>
+            <option value="Dress">Dress</option>
+            <option value="Shoes">Shoes</option>
+            <option value="Accessory">Accessory</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <input
+            type="text"
+            id="categoryOther"
+            name="categoryOther"
+            class="other-input"
+            placeholder="Enter another category"
+          >
+
+        </div>
+
+
+        <!-- Size -->
+        <div class="share-form-row">
+
+          <label for="size">
+            Size:
+          </label>
+
+          <select
+            id="size"
+            name="size"
+            class="select-with-other"
+            data-other-input="sizeOther"
+            required
+          >
+            <option value="">
+              Select a size
+            </option>
+
+            <option value="XXS">XXS</option>
+            <option value="XS">XS</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            <option value="XXL">XXL</option>
+            <option value="One Size">One Size</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <input
+            type="text"
+            id="sizeOther"
+            name="sizeOther"
+            class="other-input"
+            placeholder="Enter another size"
+          >
+
+        </div>
+
+
+        <!-- Color -->
+        <div class="share-form-row">
+
+          <label for="color">
+            Color:
+          </label>
+
+          <select
+            id="color"
+            name="color"
+            class="select-with-other"
+            data-other-input="colorOther"
+            required
+          >
+            <option value="">
+              Select a color
+            </option>
+
+            <option value="Black">Black</option>
+            <option value="White">White</option>
+            <option value="Gray">Gray</option>
+            <option value="Red">Red</option>
+            <option value="Orange">Orange</option>
+            <option value="Yellow">Yellow</option>
+            <option value="Green">Green</option>
+            <option value="Blue">Blue</option>
+            <option value="Purple">Purple</option>
+            <option value="Pink">Pink</option>
+            <option value="Brown">Brown</option>
+            <option value="Beige">Beige</option>
+            <option value="Multicolor">Multicolor</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <input
+            type="text"
+            id="colorOther"
+            name="colorOther"
+            class="other-input"
+            placeholder="Enter another color"
+          >
+
+        </div>
+
+
+        <!-- Brand -->
+        <div class="share-form-row">
+
+          <label for="brand">
+            Brand:
+          </label>
+
+          <select
+            id="brand"
+            name="brand"
+            class="select-with-other"
+            data-other-input="brandOther"
+            required
+          >
+            <option value="">
+              Select a brand
+            </option>
+
+            <option value="Nike">Nike</option>
+            <option value="Adidas">Adidas</option>
+            <option value="Uniqlo">Uniqlo</option>
+            <option value="Zara">Zara</option>
+            <option value="H&M">H&M</option>
+            <option value="Gap">Gap</option>
+            <option value="Levi's">Levi's</option>
+            <option value="Forever 21">Forever 21</option>
+            <option value="No Brand">No Brand</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <input
+            type="text"
+            id="brandOther"
+            name="brandOther"
+            class="other-input"
+            placeholder="Enter another brand"
+          >
+
+        </div>
+
+
+        <!-- Condition -->
+        <div class="share-form-row">
+
+          <label for="condition">
+            Condition:
+          </label>
+
+          <select
+            id="condition"
+            name="condition"
+            required
+          >
+            <option value="">
+              Select condition
+            </option>
+
+            <option value="New With Tags">
+              New With Tags
+            </option>
+
+            <option value="New Without Tags">
+              New Without Tags
+            </option>
+
+            <option value="Like New">
+              Like New
+            </option>
+
+            <option value="Good">
+              Good
+            </option>
+
+            <option value="Fair">
+              Fair
+            </option>
+
+            <option value="Poor">
+              Poor
+            </option>
+          </select>
+
+        </div>
+
+
+        <!-- Image URL -->
+        <div class="share-form-row">
+
+          <label for="imageUrl">
+            Image URL:
+          </label>
+
+          <input
+            type="url"
+            id="imageUrl"
+            name="imageUrl"
+            placeholder="https://example.com/image.jpg"
+            required
+          >
+
+        </div>
+
+
+        <!-- Rental Price -->
+        <div class="share-form-row">
+
+          <label for="rentalPrice">
+            Rental Price Per Day:
+          </label>
+
+          <input
+            type="number"
+            id="rentalPrice"
+            name="rentalPrice"
+            min="0"
+            step="0.01"
+            placeholder="Enter daily rental price"
+            required
+          >
+
+        </div>
+
+
+        <div class="share-form-actions">
+
+          <button type="submit">
+            Share Clothing
+          </button>
+
+        </div>
+
+      </form>
+
+
+      <a
+        href="/"
+        class="share-back-link"
+      >
+        Back to Home
+      </a>
+
+    </section>
+
+  </main>
+
+
+  <script>
+    const selectElements =
+      document.querySelectorAll(".select-with-other");
+
+    function updateOtherInput(selectElement) {
+      const inputId =
+        selectElement.dataset.otherInput;
+
+      const otherInput =
+        document.getElementById(inputId);
+
+      if (!otherInput) {
+        return;
+      }
+
+      if (selectElement.value === "Other") {
+        otherInput.style.display = "block";
+        otherInput.required = true;
+      } else {
+        otherInput.style.display = "none";
+        otherInput.required = false;
+        otherInput.value = "";
+      }
+    }
+
+    selectElements.forEach((selectElement) => {
+      updateOtherInput(selectElement);
+
+      selectElement.addEventListener("change", () => {
+        updateOtherInput(selectElement);
+      });
+    });
+  </script>
+
+
+  <%- include("../partials/footer") %>
+
+</body>
+</html>

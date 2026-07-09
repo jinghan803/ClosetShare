@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <title>Received Borrow Requests</title>
+</head>
+
+<body>
+
+  <%- include("../partials/navbar") %>
+
+  <main class="borrow-history-page">
+
+    <h1 class="borrow-history-title">
+      Received Borrow Requests
+    </h1>
+
+    <%
+      function safeDate(value) {
+        if (!value) {
+          return null;
+        }
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+          return null;
+        }
+
+        return date;
+      }
+
+      function formatFullDate(value) {
+        const date = safeDate(value);
+
+        if (!date) {
+          return "Unknown Date";
+        }
+
+        return date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        });
+      }
+
+      function formatShortDate(value) {
+        const date = safeDate(value);
+
+        if (!date) {
+          return "Unknown";
+        }
+
+        return date.toLocaleDateString("en-US");
+      }
+
+      function getItem(request) {
+        return request.itemId || request.itemSnapshot || null;
+      }
+
+      function getRatingValue(request) {
+        /*
+          这里兼容多种后端字段写法：
+          1. request.review.rating
+          2. request.rating
+          3. request.reviewRating
+          4. request.itemId.averageRating
+
+          如果你的评分数据字段不是这些名字，
+          后面再把字段名换成你后端真实传过来的名字。
+        */
+
+        const item = getItem(request);
+
+        const possibleRating =
+          request.review?.rating ||
+          request.rating ||
+          request.reviewRating ||
+          item?.userRating ||
+          item?.averageRating ||
+          null;
+
+        const ratingNumber = Number(possibleRating);
+
+        if (
+          Number.isNaN(ratingNumber) ||
+          ratingNumber <= 0
+        ) {
+          return null;
+        }
+
+        return ratingNumber;
+      }
+
+      function getRatingText(request) {
+        const rating = getRatingValue(request);
+
+        if (!rating) {
+          return "Not Rated";
+        }
+
+        return `★ ${rating.toFixed(1)}`;
+      }
+
+      function getRatingClass(request) {
+        const rating = getRatingValue(request);
+
+        if (!rating) {
+          return "rating-not-rated";
+        }
+
+        if (rating >= 4.5) {
+          return "rating-high";
+        }
+
+        if (rating >= 3) {
+          return "rating-medium";
+        }
+
+        return "rating-low";
+      }
+
+      function getStatusClass(status) {
+        if (status === "Accepted") {
+          return "status-accepted";
+        }
+
+        if (status === "Rejected") {
+          return "status-rejected";
+        }
+
+        if (status === "Completed") {
+          return "status-completed";
+        }
+
+        return "status-pending";
+      }
+
+      const requestGroups = {};
+
+      requests.forEach(request => {
+        /*
+          这里用 startDate 分组，因为你说的是“当天所借的衣服”。
+          如果你想按提交申请的日期分组，把 request.startDate 改成 request.createdAt。
+        */
+        const groupDate =
+          safeDate(request.startDate) ||
+          safeDate(request.createdAt);
+
+        const groupKey = groupDate
+          ? groupDate.toISOString().slice(0, 10)
+          : "unknown";
+
+        if (!requestGroups[groupKey]) {
+          requestGroups[groupKey] = {
+            date: groupDate,
+            label: groupDate
+              ? formatFullDate(groupDate)
+              : "Unknown Date",
+            items: []
+          };
+        }
+
+        requestGroups[groupKey].items.push(request);
+      });
+
+      const groupedRequests =
+        Object.values(requestGroups).sort((a, b) => {
+          const timeA = a.date ? a.date.getTime() : 0;
+          const timeB = b.date ? b.date.getTime() : 0;
+
+          return timeB - timeA;
+        });
+
+      groupedRequests.forEach(group => {
+        group.items.sort((a, b) => {
+          const ratingA = getRatingValue(a);
+          const ratingB = getRatingValue(b);
+
+          const sortA = ratingA || -1;
+          const sortB = ratingB || -1;
+
+          if (sortB !== sortA) {
+            return sortB - sortA;
+          }
+
+          const createdA = safeDate(a.createdAt);
+          const createdB = safeDate(b.createdAt);
+
+          return (
+            (createdB ? createdB.getTime() : 0) -
+            (createdA ? createdA.getTime() : 0)
+          );
+        });
+      });
+    %>
+
+
+    <% if (requests.length === 0) { %>
+
+      <section class="borrow-empty-state">
+
+        <p>
+          You have not received any borrow requests.
+        </p>
+
+        <a href="/items">
+          Browse Clothing
+        </a>
+
+      </section>
+
+    <% } else { %>
+
+      <% groupedRequests.forEach(group => { %>
+
+        <section class="borrow-date-section">
+
+          <h2 class="borrow-date-title">
+            <%= group.label %>
+          </h2>
+
+
+          <div class="borrow-history-grid">
+
+            <% group.items.forEach(request => { %>
+
+              <%
+                const item = getItem(request);
+                const rating = getRatingValue(request);
+                const modalId = `borrow-detail-${request._id}`;
+              %>
+
+              <article class="borrow-history-card">
+
+                <button
+                  type="button"
+                  class="borrow-card-button"
+                  data-modal-id="<%= modalId %>"
+                >
+
+                  <!-- 图片区域 -->
+                  <div class="borrow-card-image-wrap">
+
+                    <% if (item && item.imageUrl) { %>
+
+                      <img
+                        src="<%= item.imageUrl %>"
+                        alt="<%= item.title %>"
+                        class="borrow-card-image"
+                      >
+
+                    <% } else { %>
+
+                      <div class="borrow-card-placeholder">
+                        No Image
+                      </div>
+
+                    <% } %>
+
+
+                    <!-- 右上角标签：评分 + 状态 -->
+                    <div class="borrow-card-tags">
+
+                      <span
+                        class="borrow-rating-tag <%= getRatingClass(request) %>"
+                      >
+                        <%= getRatingText(request) %>
+                      </span>
+
+                      <span
+                        class="borrow-status-tag <%= getStatusClass(request.status) %>"
+                      >
+                        <%= request.status %>
+                      </span>
+
+                    </div>
+
+                  </div>
+
+
+                  <!-- 卡片内容，和 Browse Clothing 的卡片风格接近 -->
+                  <div class="borrow-card-body">
+
+                    <div class="borrow-card-top-row">
+
+                      <span class="borrow-card-category">
+                        <%= item ? item.category : "Unknown" %>
+                      </span>
+
+                      <span class="borrow-card-size">
+                        Size <%= item ? item.size : "Unknown" %>
+                      </span>
+
+                    </div>
+
+
+                    <h3 class="borrow-card-title">
+                      <%= item ? item.title : "Deleted Clothing Item" %>
+                    </h3>
+
+
+                    <div class="borrow-card-info">
+
+                      <p>
+                        <strong>Color:</strong>
+                        <%= item ? item.color : "Unknown" %>
+                      </p>
+
+                      <p>
+                        <strong>Condition:</strong>
+                        <%= item ? item.condition : "Unknown" %>
+                      </p>
+
+                    </div>
+
+
+                    <div class="borrow-card-divider"></div>
+
+
+                    <p class="borrow-card-rating-text">
+
+                      <% if (rating) { %>
+
+                        ★ <%= rating.toFixed(1) %> / 5
+
+                      <% } else { %>
+
+                        No ratings yet
+
+                      <% } %>
+
+                    </p>
+
+
+                    <div class="borrow-card-bottom">
+
+                      <div class="borrow-card-price">
+
+                        <small>
+                          Rental Price
+                        </small>
+
+                        <strong>
+                          $<%= item
+                            ? Number(item.rentalPrice || 0).toFixed(2)
+                            : "0.00"
+                          %>
+                        </strong>
+
+                      </div>
+
+
+                      <span class="borrow-view-button">
+                        View Detail
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </button>
+
+              </article>
+
+
+              <!-- 点击卡片后的书本详情 -->
+              <div
+                id="<%= modalId %>"
+                class="borrow-book-modal"
+                hidden
+              >
+
+                <div class="borrow-book-backdrop"></div>
+
+                <section class="borrow-book">
+
+                  <button
+                    type="button"
+                    class="borrow-book-close"
+                    data-close-modal
+                  >
+                    ×
+                  </button>
+
+
+                  <!-- 左页：衣服内容 -->
+                  <div class="borrow-book-page borrow-book-left">
+
+                    <h2>
+                      Clothing Item
+                    </h2>
+
+
+                    <div class="book-item-preview">
+
+                      <% if (item && item.imageUrl) { %>
+
+                        <img
+                          src="<%= item.imageUrl %>"
+                          alt="<%= item.title %>"
+                        >
+
+                      <% } else { %>
+
+                        <div class="book-item-placeholder">
+                          No Image
+                        </div>
+
+                      <% } %>
+
+                    </div>
+
+
+                    <div class="book-item-info">
+
+                      <div class="book-item-top-row">
+
+                        <span class="book-item-category">
+                          <%= item ? item.category : "Unknown" %>
+                        </span>
+
+                        <span class="book-item-size">
+                          Size <%= item ? item.size : "Unknown" %>
+                        </span>
+
+                      </div>
+
+
+                      <h3>
+                        <%= item ? item.title : "Deleted Clothing Item" %>
+                      </h3>
+
+
+                      <% if (item) { %>
+
+                        <p>
+                          <strong>Color:</strong>
+                          <%= item.color || "Not specified" %>
+                        </p>
+
+                        <p>
+                          <strong>Condition:</strong>
+                          <%= item.condition || "Not specified" %>
+                        </p>
+
+                        <p>
+                          <strong>Brand:</strong>
+                          <%= item.brand || "No Brand" %>
+                        </p>
+
+                        <p>
+                          <strong>Rental Price:</strong>
+                          $<%= Number(item.rentalPrice || 0).toFixed(2) %>
+                        </p>
+
+                      <% } %>
+
+
+                      <div class="book-tags">
+
+                        <span
+                          class="borrow-rating-tag <%= getRatingClass(request) %>"
+                        >
+                          <%= getRatingText(request) %>
+                        </span>
+
+                        <span
+                          class="borrow-status-tag <%= getStatusClass(request.status) %>"
+                        >
+                          <%= request.status %>
+                        </span>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  <!-- 右页：请求详情 -->
+                  <div class="borrow-book-page borrow-book-right">
+
+                    <h2>
+                      Request Details
+                    </h2>
+
+
+                    <div class="book-detail-list">
+
+                      <p>
+                        <strong>Applicant:</strong>
+
+                        <% if (request.requesterId) { %>
+                          <%= request.requesterId.username %>
+                        <% } else { %>
+                          Unknown User
+                        <% } %>
+                      </p>
+
+
+                      <% if (request.requesterId) { %>
+
+                        <p>
+                          <strong>Applicant Email:</strong>
+                          <%= request.requesterId.email %>
+                        </p>
+
+                      <% } %>
+
+
+                      <p>
+                        <strong>Start Date:</strong>
+                        <%= formatShortDate(request.startDate) %>
+                      </p>
+
+
+                      <p>
+                        <strong>End Date:</strong>
+                        <%= formatShortDate(request.endDate) %>
+                      </p>
+
+
+                      <p>
+                        <strong>Message:</strong>
+                        <%= request.message || "No message" %>
+                      </p>
+
+
+                      <p>
+                        <strong>Status:</strong>
+                        <%= request.status %>
+                      </p>
+
+
+                      <p>
+                        <strong>Requested On:</strong>
+                        <%= formatShortDate(request.createdAt) %>
+                      </p>
+
+
+                      <p>
+                        <strong>Rating:</strong>
+
+                        <% if (rating) { %>
+                          <%= rating.toFixed(1) %> / 5
+                        <% } else { %>
+                          Not rated yet
+                        <% } %>
+                      </p>
+
+                    </div>
+
+
+                    <div class="book-actions">
+
+                      <% if (request.status === "Pending") { %>
+
+                        <form
+                          action="/requests/<%= request._id %>/accept?_method=PUT"
+                          method="POST"
+                        >
+                          <button
+                            type="submit"
+                            class="book-action-button accept-button"
+                          >
+                            Accept
+                          </button>
+                        </form>
+
+
+                        <form
+                          action="/requests/<%= request._id %>/reject?_method=PUT"
+                          method="POST"
+                        >
+                          <button
+                            type="submit"
+                            class="book-action-button reject-button"
+                            onclick="return confirm('Reject this borrow request?');"
+                          >
+                            Reject
+                          </button>
+                        </form>
+
+                      <% } %>
+
+
+                      <% if (request.status === "Accepted") { %>
+
+                        <form
+                          action="/requests/<%= request._id %>/complete?_method=PUT"
+                          method="POST"
+                        >
+                          <button
+                            type="submit"
+                            class="book-action-button complete-button"
+                            onclick="return confirm('Mark this borrowing as completed?');"
+                          >
+                            Mark as Completed
+                          </button>
+                        </form>
+
+                      <% } %>
+
+                    </div>
+
+                  </div>
+
+                </section>
+
+              </div>
+
+            <% }) %>
+
+          </div>
+
+        </section>
+
+      <% }) %>
+
+    <% } %>
+
+  </main>
+
+
+  <script>
+    const modalButtons =
+      document.querySelectorAll("[data-modal-id]");
+
+    const closeButtons =
+      document.querySelectorAll("[data-close-modal]");
+
+
+    function openModal(modalId) {
+      const modal =
+        document.getElementById(modalId);
+
+      if (!modal) {
+        return;
+      }
+
+      modal.hidden = false;
+      document.body.classList.add("modal-open");
+    }
+
+
+    function closeModal(modal) {
+      modal.hidden = true;
+      document.body.classList.remove("modal-open");
+    }
+
+
+    modalButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        openModal(button.dataset.modalId);
+      });
+    });
+
+
+    closeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const modal =
+          button.closest(".borrow-book-modal");
+
+        if (modal) {
+          closeModal(modal);
+        }
+      });
+    });
+
+
+    document
+      .querySelectorAll(".borrow-book-backdrop")
+      .forEach((backdrop) => {
+        backdrop.addEventListener("click", () => {
+          const modal =
+            backdrop.closest(".borrow-book-modal");
+
+          if (modal) {
+            closeModal(modal);
+          }
+        });
+      });
+
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      document
+        .querySelectorAll(".borrow-book-modal:not([hidden])")
+        .forEach((modal) => {
+          closeModal(modal);
+        });
+    });
+  </script>
+
+
+  <%- include("../partials/footer") %>
+
+</body>
+</html>

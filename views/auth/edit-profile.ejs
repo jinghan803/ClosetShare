@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <title>Edit Profile</title>
+</head>
+
+<body>
+
+  <%- include("../partials/navbar") %>
+
+  <main class="profile-page">
+
+    <section class="edit-profile-card">
+
+      <h1 class="profile-page-title">
+        Edit Profile
+      </h1>
+
+
+      <% if (
+        typeof error !== "undefined" &&
+        error
+      ) { %>
+
+        <div class="edit-profile-error">
+          <%= error %>
+        </div>
+
+      <% } %>
+
+
+      <form
+        action="/profile?_method=PUT"
+        method="POST"
+        class="edit-profile-info-form"
+      >
+
+        <!-- Avatar URL -->
+        <div class="edit-profile-info-row">
+
+          <label for="avatarUrl">
+            Avatar URL
+          </label>
+
+          <input
+            type="url"
+            id="avatarUrl"
+            name="avatarUrl"
+            value="<%= user.avatarUrl || "" %>"
+            placeholder="https://example.com/avatar.jpg"
+          >
+
+        </div>
+
+
+        <!-- Username -->
+        <div class="edit-profile-info-row">
+
+          <label for="username">
+            Username
+          </label>
+
+          <input
+            type="text"
+            id="username"
+            value="<%= user.username %>"
+            readonly
+          >
+
+        </div>
+
+
+        <!-- Email -->
+        <div class="edit-profile-info-row">
+
+          <label for="email">
+            Email
+          </label>
+
+          <input
+            type="email"
+            id="email"
+            value="<%= user.email %>"
+            readonly
+          >
+
+        </div>
+
+
+        <!-- Bio -->
+        <div class="edit-profile-info-row textarea-row">
+
+          <label for="bio">
+            Bio
+          </label>
+
+          <textarea
+            id="bio"
+            name="bio"
+            rows="5"
+            maxlength="500"
+            placeholder="Introduce yourself"
+          ><%= user.bio || "" %></textarea>
+
+        </div>
+
+
+        <!-- Usual Size -->
+        <div class="edit-profile-info-row">
+
+          <label for="usualSize">
+            Usual Size
+          </label>
+
+          <select
+            id="usualSize"
+            name="usualSize"
+          >
+            <option value="">
+              Select a size
+            </option>
+
+            <% [
+              "XXS",
+              "XS",
+              "S",
+              "M",
+              "L",
+              "XL",
+              "XXL",
+              "XXXL",
+              "One Size"
+            ].forEach(size => { %>
+
+              <option
+                value="<%= size %>"
+                <%= user.usualSize === size
+                  ? "selected"
+                  : ""
+                %>
+              >
+                <%= size %>
+              </option>
+
+            <% }) %>
+
+          </select>
+
+        </div>
+
+
+        <!-- Preferred Style -->
+        <div class="edit-profile-info-row">
+
+          <label for="preferredStyle">
+            Preferred Style
+          </label>
+
+          <input
+            type="text"
+            id="preferredStyle"
+            name="preferredStyle"
+            value="<%= user.preferredStyle || "" %>"
+            maxlength="50"
+            placeholder="Casual, Sporty, Vintage"
+          >
+
+        </div>
+
+
+        <!-- 底部两个按钮 -->
+        <div class="edit-profile-actions-two">
+
+          <a
+            href="/profile"
+            class="edit-profile-cancel-button"
+          >
+            Cancel
+          </a>
+
+          <button
+            type="submit"
+            class="edit-profile-save-button"
+          >
+            Save Profile
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+  </main>
+
+  <%- include("../partials/footer") %>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <title>Edit <%= item.title %></title>
+</head>
+
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/items">Browse Clothing</a>
+    <a href="/items/new">Share Clothing</a>
+  </nav>
+
+  <h1>Edit Clothing Item</h1>
+
+  <form
+    action="/items/<%= item._id %>?_method=PUT"
+    method="POST"
+  >
+    <label for="title">Clothing Name</label>
+
+    <input
+      id="title"
+      name="title"
+      type="text"
+      value="<%= item.title %>"
+      required
+    >
+
+    <label for="description">Description</label>
+
+    <textarea
+      id="description"
+      name="description"
+      required
+    ><%= item.description %></textarea>
+
+    <label for="category">Category</label>
+
+    <select id="category" name="category" required>
+      <% [
+				"T-Shirt",
+				"Shirt",
+				"Sweater",
+				"Hoodie",
+				"Jacket",
+				"Coat",
+				"Jeans",
+				"Pants",
+				"Shorts",
+				"Skirt",
+				"Dress",
+				"Shoes",
+				"Accessories",
+				"Other",//其他
+      ].forEach(category => { %>
+
+        <option
+          value="<%= category %>"
+          <%= item.category === category ? "selected" : "" %>
+        >
+          <%= category %>
+        </option>
+
+      <% }) %>
+    </select>
+
+    <label for="size">Size</label>
+
+    <input
+      id="size"
+      name="size"
+      type="text"
+      value="<%= item.size %>"
+      required
+    >
+
+    <label for="color">Color</label>
+
+    <input
+      id="color"
+      name="color"
+      type="text"
+      value="<%= item.color %>"
+      required
+    >
+
+    <label for="brand">Brand</label>
+
+    <input
+      id="brand"
+      name="brand"
+      type="text"
+      value="<%= item.brand %>"
+    >
+
+    <label for="condition">Condition</label>
+
+    <select id="condition" name="condition" required>
+      <% [
+				"New With Tags",
+				"New Without Tags",
+				"Like New",
+				"Good",
+				"Fair",
+				"Poor",
+      ].forEach(condition => { %>
+
+        <option
+          value="<%= condition %>"
+          <%= item.condition === condition ? "selected" : "" %>
+        >
+          <%= condition %>
+        </option>
+
+      <% }) %>
+    </select>
+
+    <label for="imageUrl">Image URL</label>
+
+    <input
+      id="imageUrl"
+      name="imageUrl"
+      type="url"
+      value="<%= item.imageUrl %>"
+    >
+
+    <label for="rentalPrice">Rental Price</label>
+
+    <input
+      id="rentalPrice"
+      name="rentalPrice"
+      type="number"
+      min="0"
+      step="0.01"
+      value="<%= item.rentalPrice %>"
+    >
+
+    <label for="isAvailable">Availability</label>
+
+    <select id="isAvailable" name="isAvailable">
+      <option
+        value="true"
+        <%= item.isAvailable ? "selected" : "" %>
+      >
+        Available
+      </option>
+
+      <option
+        value="false"
+        <%= !item.isAvailable ? "selected" : "" %>
+      >
+        Unavailable
+      </option>
+    </select>
+
+    <button type="submit">
+      Save Changes
+    </button>
+  </form>
+
+  <a href="/items/<%= item._id %>">
+    Cancel
+  </a>
+  <%- include("../partials/footer") %>
+</body>
+</html>
