@@ -13,6 +13,7 @@ const session = require("express-session");
 const passport = require("./config/passport");
 const requestRoutes = require("./routes/requests");
 const reviewRoutes = require("./routes/reviews");
+const chatRoutes = require("./routes/chats");
 
 require("dotenv").config();//引入dotenv模块，读取.env文件中的环境变量
 
@@ -70,6 +71,8 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.session.user || null;
   next();
 });
+
+app.use("/chats", chatRoutes);
 
 // 首页路由
 app.get("/", (req, res) => {

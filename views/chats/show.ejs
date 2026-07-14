@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Chat</title>
+
+  <link
+    rel="stylesheet"
+    href="/css/style.css"
+  >
+</head>
+
+<body class="chat-page-body">
+
+  <main class="wechat-layout">
+
+    <!-- 左侧聊天列表 -->
+    <aside class="wechat-sidebar">
+
+      <div class="wechat-sidebar-title">
+        Chats
+      </div>
+
+      <div class="wechat-chat-list">
+
+        <% if (chatList.length === 0) { %>
+
+          <p class="wechat-empty">
+            No chats yet.
+          </p>
+
+        <% } %>
+
+        <% chatList.forEach((chat) => { %>
+
+          <%
+            const chatRequest = chat.request;
+            const chatOtherUser = chat.otherUser;
+            const chatItem = chat.item;
+            const latestMessage = chat.latestMessage;
+          %>
+
+          <a
+            href="/chats/<%= chatRequest._id %>"
+            class="wechat-chat-item <%= chat.isActive ? 'wechat-chat-item-active' : '' %>"
+          >
+
+            <div class="wechat-avatar">
+              <% if (chatOtherUser && chatOtherUser.avatarUrl) { %>
+                <img
+                  src="<%= chatOtherUser.avatarUrl %>"
+                  alt="<%= chatOtherUser.username %>"
+                  class="wechat-avatar-img"
+                >
+              <% } else { %>
+                <%= chatOtherUser && chatOtherUser.username
+                  ? chatOtherUser.username.charAt(0).toUpperCase()
+                  : "U"
+                %>
+              <% } %>
+            </div>
+
+            <div class="wechat-chat-preview">
+
+              <div class="wechat-chat-row">
+
+                <strong
+                  class="wechat-chat-name"
+                  data-chat-name
+                  data-chat-id="<%= chatRequest._id %>"
+                >
+                  <%= chatOtherUser && chatOtherUser.username
+                    ? chatOtherUser.username
+                    : "Unknown User"
+                  %>
+                </strong>
+
+                <span class="wechat-chat-time">
+                  <% if (latestMessage) { %>
+                    <%= new Date(latestMessage.createdAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit"
+                    }) %>
+                  <% } else { %>
+                    <%= chatRequest.status %>
+                  <% } %>
+                </span>
+
+              </div>
+
+              <p class="wechat-chat-last-message">
+
+                <% if (latestMessage) { %>
+
+                  <%= latestMessage.message %>
+
+                <% } else { %>
+
+                  <%= chatItem && chatItem.title
+                    ? chatItem.title
+                    : "No messages yet"
+                  %>
+
+                <% } %>
+
+              </p>
+
+            </div>
+
+          </a>
+
+        <% }) %>
+
+      </div>
+
+    </aside>
+
+
+    <!-- 右侧聊天区域 -->
+    <section class="wechat-main">
+
+      <header class="wechat-header">
+
+        <input
+          id="chatRemarkInput"
+          class="wechat-remark-input"
+          value="<%= otherUser && otherUser.username
+            ? otherUser.username
+            : 'Unknown User'
+          %>"
+          data-default-name="<%= otherUser && otherUser.username
+            ? otherUser.username
+            : 'Unknown User'
+          %>"
+          data-chat-id="<%= request._id %>"
+          maxlength="30"
+          title="You can edit this note"
+        >
+
+        <a
+          href="<%= backUrl %>"
+          class="wechat-exit-button"
+        >
+          Exit
+        </a>
+
+      </header>
+
+
+      <!-- 聊天记录 -->
+      <section class="wechat-messages">
+
+        <% if (messages.length === 0) { %>
+
+          <p class="wechat-no-message">
+            No messages yet.
+          </p>
+
+        <% } %>
+
+        <% messages.forEach((chatMessage) => { %>
+
+          <%
+            const senderId =
+              chatMessage.senderId &&
+              chatMessage.senderId._id
+                ? chatMessage.senderId._id.toString()
+                : "";
+
+            const isMine =
+              senderId === currentUserId;
+
+            const senderName =
+              chatMessage.senderId &&
+              chatMessage.senderId.username
+                ? chatMessage.senderId.username
+                : "Unknown User";
+          %>
+
+          <div
+            class="wechat-message-row <%= isMine ? 'wechat-message-mine' : 'wechat-message-other' %>"
+          >
+
+            <% if (!isMine) { %>
+              <div class="wechat-message-avatar">
+                <% if (chatMessage.senderId.avatarUrl) { %>
+                  <img
+                    src="<%= chatMessage.senderId.avatarUrl %>"
+                    alt="<%= senderName %>"
+                    class="wechat-avatar-img"
+                  >
+                <% } else { %>
+                  <%= senderName.charAt(0).toUpperCase() %>
+                <% } %>
+              </div>
+            <% } %>
+
+            <div class="wechat-bubble">
+
+              <p>
+                <%= chatMessage.message %>
+              </p>
+
+              <small>
+                <%= new Date(chatMessage.createdAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit"
+                }) %>
+              </small>
+
+            </div>
+
+            <% if (isMine) { %>
+              <div class="wechat-message-avatar">
+                <% if (chatMessage.senderId.avatarUrl) { %>
+                  <img
+                    src="<%= chatMessage.senderId.avatarUrl %>"
+                    alt="You"
+                    class="wechat-avatar-img"
+                  >
+                <% } else { %>
+                  You
+                <% } %>
+              </div>
+            <% } %>
+
+          </div>
+
+        <% }) %>
+
+      </section>
+
+
+      <!-- 底部输入框 -->
+      <footer class="wechat-input-area">
+
+        <% if (canSend) { %>
+
+          <form
+            id="chatMessageForm"
+            class="wechat-message-form"
+            action="/chats/<%= request._id %>"
+            method="POST"
+          >
+
+            <textarea
+              id="messageInput"
+              name="message"
+              class="wechat-message-input"
+              maxlength="500"
+              placeholder="Type a message..."
+              required
+            ></textarea>
+
+            <button
+              type="submit"
+              class="wechat-send-button"
+            >
+              Send
+            </button>
+
+          </form>
+
+        <% } else { %>
+
+          <div class="wechat-readonly-box">
+            This chat is read-only because the borrow request is not active.
+          </div>
+
+        <% } %>
+
+      </footer>
+
+    </section>
+
+  </main>
+
+
+  <script>
+    const remarkInput =
+      document.getElementById("chatRemarkInput");
+
+    if (remarkInput) {
+      const chatId =
+        remarkInput.dataset.chatId;
+
+      const defaultName =
+        remarkInput.dataset.defaultName;
+
+      const storageKey =
+        `closetshare-chat-remark-${chatId}`;
+
+      const savedRemark =
+        localStorage.getItem(storageKey);
+
+      if (savedRemark) {
+        remarkInput.value = savedRemark;
+      }
+
+      const updateSidebarName = (name) => {
+        const sidebarName =
+          document.querySelector(
+            `[data-chat-name][data-chat-id="${chatId}"]`
+          );
+
+        if (sidebarName) {
+          sidebarName.textContent = name;
+        }
+      };
+
+      updateSidebarName(
+        savedRemark || defaultName
+      );
+
+      remarkInput.addEventListener("input", () => {
+        const value =
+          remarkInput.value.trim();
+
+        if (value) {
+          localStorage.setItem(
+            storageKey,
+            value
+          );
+
+          updateSidebarName(value);
+        } else {
+          localStorage.removeItem(storageKey);
+          updateSidebarName(defaultName);
+        }
+      });
+    }
+
+    document
+      .querySelectorAll("[data-chat-name]")
+      .forEach((nameElement) => {
+        const chatId =
+          nameElement.dataset.chatId;
+
+        const storageKey =
+          `closetshare-chat-remark-${chatId}`;
+
+        const savedRemark =
+          localStorage.getItem(storageKey);
+
+        if (savedRemark) {
+          nameElement.textContent = savedRemark;
+        }
+      });
+
+
+    const messageInput =
+      document.getElementById("messageInput");
+
+    const chatMessageForm =
+      document.getElementById("chatMessageForm");
+
+    if (messageInput && chatMessageForm) {
+      messageInput.addEventListener(
+        "keydown",
+        (event) => {
+          if (
+            event.key === "Enter" &&
+            !event.shiftKey
+          ) {
+            event.preventDefault();
+
+            if (messageInput.value.trim()) {
+              chatMessageForm.submit();
+            }
+          }
+        }
+      );
+    }
+  </script>
+
+</body>
+</html>

@@ -537,7 +537,13 @@
                         <% } else { %>
                           Not rated yet
                         <% } %>
+                        
                       </p>
+
+                                            <a href="/chats/<%= request._id %>"
+                        class="book-action-view-button">
+                        View Chat
+                      </a>
 
 
                       <% if (request.review && request.review.comment) { %>

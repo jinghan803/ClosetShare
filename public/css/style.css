@@ -2755,6 +2755,8 @@ body.modal-open {
   margin-top: 22px;
 }
 
+
+
 .book-actions form {
   margin: 0;
 }
@@ -3953,4 +3955,417 @@ body.modal-open {
       #c96963,
       #e78b62
     );
+}
+
+
+/* WeChat-style chat page */
+
+.chat-page-body {
+  margin: 0;
+  background-color: #e9e9e9;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.wechat-layout {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+  background-color: #f2f2f2;
+}
+
+/* Left sidebar */
+
+.wechat-sidebar {
+  width: 300px;
+  height: 100vh;
+  background-color: #f7f7f7;
+  border-right: 1px solid #d0d0d0;
+  overflow-y: auto;
+}
+
+.wechat-sidebar-title {
+  height: 58px;
+  padding: 18px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid #dddddd;
+  background-color: #eeeeee;
+}
+
+.wechat-chat-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.wechat-chat-item {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  color: #222222;
+  text-decoration: none;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.wechat-chat-item:hover {
+  background-color: #eeeeee;
+}
+
+.wechat-chat-item-active {
+  background-color: #dcdcdc;
+}
+
+.wechat-avatar,
+.wechat-message-avatar {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 6px;
+  background-color: #cfcfcf;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.wechat-chat-preview {
+  min-width: 0;
+  flex: 1;
+}
+
+.wechat-chat-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.wechat-chat-name {
+  max-width: 150px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.wechat-chat-time {
+  color: #999999;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.wechat-chat-last-message {
+  margin: 6px 0 0;
+  color: #888888;
+  font-size: 14px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+.wechat-empty {
+  padding: 20px;
+  color: #777777;
+}
+
+/* Main chat area */
+
+.wechat-main {
+  flex: 1;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #ededed;
+}
+
+.wechat-header {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  border-bottom: 1px solid #d0d0d0;
+  background-color: #f3f3f3;
+}
+
+.wechat-remark-input {
+  width: 100%;
+  max-width: 420px;
+  border: none;
+  background-color: transparent;
+  font-size: 20px;
+  font-weight: bold;
+  outline: none;
+}
+
+
+.wechat-remark-input:focus {
+  border-bottom: 1px solid #999999;
+}
+
+/* Message area */
+
+.wechat-messages {
+  flex: 1;
+  padding: 24px 30px;
+  overflow-y: auto;
+}
+
+.wechat-no-message {
+  text-align: center;
+  color: #888888;
+  margin-top: 40px;
+}
+
+.wechat-message-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.wechat-message-other {
+  justify-content: flex-start;
+}
+
+.wechat-message-mine {
+  justify-content: flex-end;
+}
+
+.wechat-bubble {
+  max-width: min(520px, 60%);
+  padding: 10px 14px;
+  border-radius: 6px;
+  background-color: #ffffff;
+  position: relative;
+}
+
+.wechat-message-mine .wechat-bubble {
+  background-color: #95ec69;
+}
+
+.wechat-bubble p {
+  margin: 0;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.wechat-bubble small {
+  display: block;
+  margin-top: 6px;
+  color: #777777;
+  font-size: 11px;
+  text-align: right;
+}
+
+/* Input area */
+
+.wechat-input-area {
+  min-height: 145px;
+  border-top: 1px solid #d0d0d0;
+  background-color: #f7f7f7;
+  padding: 14px 18px;
+}
+
+.wechat-message-form {
+  height: 100%;
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.wechat-message-input {
+  flex: 1;
+  height: 95px;
+  resize: none;
+  border: none;
+  outline: none;
+  background-color: #f7f7f7;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.wechat-send-button {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 4px;
+  background-color: #07c160;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.wechat-send-button:hover {
+  background-color: #06ad56;
+}
+
+.wechat-readonly-box {
+  color: #777777;
+  font-size: 15px;
+  padding: 20px 0;
+}
+
+@media (max-width: 800px) {
+  .wechat-sidebar {
+    width: 120px;
+  }
+
+  .wechat-chat-last-message,
+  .wechat-chat-time {
+    display: none;
+  }
+
+  .wechat-avatar {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+
+  .wechat-chat-name {
+    max-width: 60px;
+    font-size: 13px;
+  }
+
+  .wechat-bubble {
+    max-width: 78%;
+  }
+
+  .wechat-header {
+    padding: 0 16px;
+  }
+
+  .wechat-messages {
+    padding: 18px 14px;
+  }
+}
+
+/* Chat page font size adjustment: 12px - 14px */
+
+.chat-page-body {
+  font-size: 14px;
+}
+
+/* 左侧标题 */
+.wechat-sidebar-title {
+  font-size: 14px;
+}
+
+/* 左侧商家名字 */
+.wechat-chat-name {
+  font-size: 14px;
+}
+
+/* 左侧时间 */
+.wechat-chat-time {
+  font-size: 12px;
+}
+
+/* 左侧最后一条聊天内容 */
+.wechat-chat-last-message {
+  font-size: 12px;
+}
+
+/* 右侧顶部商家姓名 / 备注 */
+.wechat-remark-input {
+  font-size: 14px;
+}
+
+/* 聊天气泡文字 */
+.wechat-bubble p {
+  font-size: 14px;
+}
+
+/* 聊天时间 */
+.wechat-bubble small {
+  font-size: 12px;
+}
+
+/* 输入框 */
+.wechat-message-input {
+  font-size: 14px;
+}
+
+/* Send 按钮 */
+.wechat-send-button {
+  font-size: 13px;
+}
+
+/* 只读提示 */
+.wechat-readonly-box {
+  font-size: 13px;
+}
+
+/* 没有消息提示 */
+.wechat-no-message,
+.wechat-empty {
+  font-size: 13px;
+}
+
+/* 头像文字 */
+.wechat-avatar,
+.wechat-message-avatar {
+  font-size: 13px;
+}
+
+/* Chat avatar and exit button */
+
+.wechat-avatar,
+.wechat-message-avatar {
+  overflow: hidden;
+}
+
+.wechat-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 顶部：备注 + 退出按钮 */
+.wechat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.wechat-exit-button {
+  flex: 0 0 auto;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background-color: #e5e5e5;
+  color: #333333;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.wechat-exit-button:hover {
+  background-color: #d6d6d6;
+}
+
+
+/* Unified action link buttons */
+
+a.book-action-view-button {
+  display: inline-block;
+  padding: 8px 14px;
+
+  border: none;
+  border-radius: 8px;
+
+  background-color: #6f5b5b;
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+a.book-action-view-button:hover {
+  background-color: #574545;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.chat-button {
+  background-color: #6f5b5b;
 }

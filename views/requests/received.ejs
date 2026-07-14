@@ -562,6 +562,13 @@
 
                     <div class="book-actions">
 
+                        <a
+                          href="/chats/<%= request._id %>"
+                          class="book-action-view-button"
+                        >
+                          View Chat
+                        </a>
+
                       <% if (request.status === "Pending") { %>
 
                         <form
