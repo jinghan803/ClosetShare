@@ -1,10 +1,11 @@
+require("dotenv").config();//引入dotenv模块，读取.env文件中的环境变量
+
 const express = require("express");//创建服务器接口
 
 const mongoose = require("mongoose");//引入mongoose模块
 const path = require("path");//Node.js 的 path 模块提供了一些用于处理文件路径的小工具
 
 const app = express();//创建服务对象
-const PORT = 3000;//端口是什么
 
 const itemRoutes = require("./routes/items");
 const methodOverride = require("method-override");//引入method-override模块
@@ -15,7 +16,6 @@ const requestRoutes = require("./routes/requests");
 const reviewRoutes = require("./routes/reviews");
 const chatRoutes = require("./routes/chats");
 
-require("dotenv").config();//引入dotenv模块，读取.env文件中的环境变量
 
 // 检查 Session 密钥
 if (!process.env.SESSION_SECRET) {
