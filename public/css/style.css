@@ -4542,3 +4542,385 @@ a.book-action-view-button:hover {
   font-size: 13px;
 }
 
+/* ========================================
+   Review Clothing Page
+   Font size: 12px - 14px
+======================================== */
+
+.review-page {
+  min-height: calc(100vh - 180px);
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  box-sizing: border-box;
+  padding: 35px 20px 60px;
+
+  font-size: 14px;
+  text-shadow: none;
+}
+
+.review-card {
+  width: min(390px, 92vw);
+  box-sizing: border-box;
+
+  padding: 18px 16px 22px;
+
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 18px;
+
+  box-shadow:
+    0 12px 32px rgba(70, 70, 70, 0.13);
+
+  color: #604d4d;
+  text-align: center;
+}
+
+.review-card * {
+  font-size: 14px;
+  text-shadow: none;
+}
+
+
+/* 顶部栏 */
+
+.review-top-bar {
+  position: relative;
+
+  min-height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 20px;
+}
+
+.review-top-bar h1 {
+  margin: 0;
+
+  color: #604d4d;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.review-back-button {
+  position: absolute;
+  left: 0;
+
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #604d4d;
+  background: transparent;
+
+  border-radius: 50%;
+
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.review-back-button:hover {
+  background: rgba(156, 96, 96, 0.1);
+}
+
+
+/* 中间用户 / 衣服信息 */
+
+.review-user-block {
+  margin-bottom: 22px;
+}
+
+.review-avatar {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 10px;
+
+  color: white;
+  background:
+    linear-gradient(
+      135deg,
+      #6cc6cb,
+      #9c6060
+    );
+
+  border-radius: 50%;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  box-shadow:
+    0 5px 16px rgba(70, 70, 70, 0.14);
+}
+
+.review-user-block h2 {
+  margin: 0 0 8px;
+
+  color: #604d4d;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.review-user-block p {
+  margin: 0;
+
+  color: #8a6f6f;
+  font-size: 13px;
+}
+
+.review-user-block strong {
+  color: #9c6060;
+  font-size: 13px;
+}
+
+/* 错误信息 */
+
+.review-error {
+  margin-bottom: 14px;
+  padding: 9px 11px;
+
+  color: #9c6060;
+  background: rgba(156, 96, 96, 0.09);
+
+  border: 1px solid rgba(156, 96, 96, 0.18);
+  border-radius: 9px;
+
+  font-size: 13px;
+}
+
+
+/* 表单 */
+
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.review-section-label {
+  margin: 0 0 12px;
+
+  color: #9c6060;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* 评分表情 */
+
+.review-rating-options {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.review-rating-option {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+
+  cursor: pointer;
+}
+
+.review-rating-option input {
+  display: none;
+}
+
+.review-rating-emoji {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eeeeee;
+  border: 2px solid transparent;
+  border-radius: 50%;
+
+  font-size: 14px;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.review-rating-text {
+  color: #8a7777;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.review-rating-option input:checked + .review-rating-emoji {
+  background: #ffe066;
+  border-color: #ffcf33;
+
+  transform: translateY(-2px);
+}
+
+.review-rating-option input:checked ~ .review-rating-text {
+  color: #9c6060;
+  font-weight: 700;
+}
+
+
+/* 标签 */
+
+.review-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.review-tag {
+  min-height: 28px;
+
+  padding: 5px 11px;
+
+  color: #7a6666;
+  background: white;
+
+  border: 1px solid rgba(156, 96, 96, 0.18);
+  border-radius: 999px;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.review-tag:hover,
+.review-tag.selected {
+  color: #604d4d;
+  background: #ffe066;
+  border-color: #ffcf33;
+}
+
+
+/* 评论输入 */
+
+.review-comment-group {
+  text-align: left;
+}
+
+.review-comment-group label {
+  display: block;
+  margin-bottom: 7px;
+
+  color: #725757;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.review-comment-group textarea {
+  width: 100%;
+  min-height: 92px;
+  box-sizing: border-box;
+
+  padding: 10px 11px;
+
+  color: #604d4d;
+  background: rgba(255, 255, 255, 0.95);
+
+  border: 1px solid rgba(156, 96, 96, 0.24);
+  border-radius: 10px;
+  outline: none;
+
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+
+  resize: vertical;
+}
+
+.review-comment-group textarea::placeholder {
+  color: #9f9090;
+  font-size: 14px;
+}
+
+.review-comment-group textarea:focus {
+  border-color: #b97870;
+  box-shadow: 0 0 0 3px rgba(185, 120, 112, 0.12);
+}
+
+
+/* 提交按钮 */
+
+.review-submit-button {
+  width: 100%;
+  height: 42px;
+
+  color: #604d4d;
+  background: #ffe066;
+
+  border: none;
+  border-radius: 9px;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.review-submit-button:hover {
+  background: #ffd43b;
+  transform: translateY(-1px);
+}
+
+/* Review page user avatar */
+
+.review-avatar {
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.review-avatar-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.review-avatar span {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.review-item-name {
+  margin: 6px 0 0;
+
+  color: #8a6f6f;
+  font-size: 12px;
+}
+
+.review-item-name strong {
+  color: #9c6060;
+  font-size: 12px;
+}

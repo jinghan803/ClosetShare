@@ -7,6 +7,7 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   >
+
   <link rel="stylesheet" href="/css/style.css">
 
   <title>Review Clothing</title>
@@ -15,80 +16,248 @@
 <body>
   <%- include("../partials/navbar") %>
 
-  <main>
-    <h1>Review Clothing</h1>
+  <main class="review-page">
 
-    <h2>
-      <%= item.title %>
-    </h2>
+    <section class="review-card">
 
-    <p>
-      <strong>Borrowing Status:</strong>
-      <%= borrowRequest.status %>
-    </p>
-
-    <% if (error) { %>
-      <p>
-        <%= error %>
-      </p>
-    <% } %>
-
-    <form
-      action="/reviews/<%= borrowRequest._id %>"
-      method="POST"
-    >
-      <div>
-        <label for="rating">
-          Rating
-        </label>
-
-        <select
-          id="rating"
-          name="rating"
-          required
+      <div class="review-top-bar">
+        <a
+          href="/requests/mine"
+          class="review-back-button"
         >
-          <option value="">
-            Select a rating
-          </option>
+          ‹
+        </a>
 
-          <% [1, 2, 3, 4, 5].forEach(number => { %>
-            <option
-              value="<%= number %>"
-              <%= String(values.rating) ===
-                  String(number)
-                ? "selected"
-                : ""
-              %>
+        <h1>
+          Review
+        </h1>
+      </div>
+
+
+      <div class="review-user-block">
+
+        <div class="review-avatar">
+
+          <% if (
+            currentUser &&
+            currentUser.avatarUrl
+          ) { %>
+
+            <img
+              src="<%= currentUser.avatarUrl %>"
+              alt="<%= currentUser.username %>'s avatar"
+              class="review-avatar-img"
             >
-              <%= number %> Star<%= number > 1 ? "s" : "" %>
-            </option>
-          <% }) %>
-        </select>
+
+          <% } else { %>
+
+            <span>
+              <%= currentUser && currentUser.username
+                ? currentUser.username.charAt(0).toUpperCase()
+                : "U"
+              %>
+            </span>
+
+          <% } %>
+
+        </div>
+
+        <h2>
+          <%= currentUser && currentUser.username
+            ? currentUser.username
+            : "User"
+          %>
+        </h2>
+
+        <p class="review-item-name">
+          Reviewing:
+          <strong>
+            <%= item.title %>
+          </strong>
+        </p>
+
+        <p>
+          Borrowing Status:
+          <strong>
+            <%= borrowRequest.status %>
+          </strong>
+        </p>
+
       </div>
 
-      <div>
-        <label for="comment">
-          Comment
-        </label>
 
-        <textarea
-          id="comment"
-          name="comment"
-          rows="6"
-          maxlength="1000"
-          placeholder="Write your review"
-        ><%= values.comment %></textarea>
-      </div>
+      <% if (error) { %>
+        <div class="review-error">
+          <%= error %>
+        </div>
+      <% } %>
 
-      <button type="submit">
-        Submit Review
-      </button>
-    </form>
 
-    <a href="/requests/mine">
-      Cancel
-    </a>
+      <form
+        action="/reviews/<%= borrowRequest._id %>"
+        method="POST"
+        class="review-form"
+      >
+
+        <div class="review-rating-group">
+
+          <p class="review-section-label">
+            How was this borrowing experience?
+          </p>
+
+          <div class="review-rating-options">
+
+            <% [
+              { value: 1, emoji: "😞", text: "Poor" },
+              { value: 2, emoji: "😐", text: "Fair" },
+              { value: 3, emoji: "🙂", text: "Good" },
+              { value: 4, emoji: "😊", text: "Great" },
+              { value: 5, emoji: "😍", text: "Excellent" }
+            ].forEach(option => { %>
+
+              <label class="review-rating-option">
+
+                <input
+                  type="radio"
+                  name="rating"
+                  value="<%= option.value %>"
+                  <%= String(values.rating) === String(option.value)
+                    ? "checked"
+                    : ""
+                  %>
+                  required
+                >
+
+                <span class="review-rating-emoji">
+                  <%= option.emoji %>
+                </span>
+
+                <span class="review-rating-text">
+                  <%= option.text %>
+                </span>
+
+              </label>
+
+            <% }) %>
+
+          </div>
+
+        </div>
+
+
+        <div class="review-tags">
+
+          <button
+            type="button"
+            class="review-tag"
+            data-review-tag="Professional"
+          >
+            Professional
+          </button>
+
+          <button
+            type="button"
+            class="review-tag"
+            data-review-tag="Friendly"
+          >
+            Friendly
+          </button>
+
+          <button
+            type="button"
+            class="review-tag"
+            data-review-tag="Easy Pickup"
+          >
+            Easy Pickup
+          </button>
+
+          <button
+            type="button"
+            class="review-tag"
+            data-review-tag="Clean Item"
+          >
+            Clean Item
+          </button>
+
+          <button
+            type="button"
+            class="review-tag"
+            data-review-tag="Good Communication"
+          >
+            Good Communication
+          </button>
+
+        </div>
+
+
+        <div class="review-comment-group">
+
+          <label for="comment">
+            Comment
+          </label>
+
+          <textarea
+            id="comment"
+            name="comment"
+            maxlength="1000"
+            placeholder="Write your review"
+          ><%= values.comment %></textarea>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="review-submit-button"
+        >
+          Submit Review
+        </button>
+
+      </form>
+
+    </section>
+
   </main>
-    <%- include("../partials/footer") %>
+
+  <%- include("../partials/footer") %>
+
+
+  <script>
+    const tagButtons =
+      document.querySelectorAll("[data-review-tag]");
+
+    const commentBox =
+      document.getElementById("comment");
+
+    tagButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const tag =
+          button.dataset.reviewTag;
+
+        button.classList.toggle("selected");
+
+        if (!commentBox) {
+          return;
+        }
+
+        const currentText =
+          commentBox.value.trim();
+
+        if (button.classList.contains("selected")) {
+          commentBox.value = currentText
+            ? `${currentText}, ${tag}`
+            : tag;
+        } else {
+          const updatedText = currentText
+            .split(",")
+            .map(part => part.trim())
+            .filter(part => part && part !== tag)
+            .join(", ");
+
+          commentBox.value = updatedText;
+        }
+      });
+    });
+  </script>
 </body>
 </html>

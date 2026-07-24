@@ -77,7 +77,7 @@ router.get(
       const messages = await ChatMessage.find({
         borrowRequestId: request._id
       })
-        .populate("senderId", "username")
+        .populate("senderId", "username avatarUrl")
         .sort({
           createdAt: 1
         });
