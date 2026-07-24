@@ -46,6 +46,7 @@ Users can register, publish clothing, browse available items, submit borrowing r
 - Git
 - GitHub
 - dotenv
+- Render
 
 ---
 
