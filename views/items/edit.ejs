@@ -14,163 +14,408 @@
 </head>
 
 <body>
-  <nav>
-    <a href="/">Home</a>
-    <a href="/items">Browse Clothing</a>
-    <a href="/items/new">Share Clothing</a>
-  </nav>
 
-  <h1>Edit Clothing Item</h1>
+  <%- include("../partials/navbar") %>
 
-  <form
-    action="/items/<%= item._id %>?_method=PUT"
-    method="POST"
-  >
-    <label for="title">Clothing Name</label>
+  <main class="item-detail-page edit-item-page">
 
-    <input
-      id="title"
-      name="title"
-      type="text"
-      value="<%= item.title %>"
-      required
-    >
+    <!-- 顶部主人信息栏 -->
+    <section class="item-owner-bar">
 
-    <label for="description">Description</label>
+      <div class="item-owner-info">
 
-    <textarea
-      id="description"
-      name="description"
-      required
-    ><%= item.description %></textarea>
+        <% if (currentUser && currentUser.avatarUrl) { %>
 
-    <label for="category">Category</label>
+          <img
+            src="<%= currentUser.avatarUrl %>"
+            alt="<%= currentUser.username %>'s avatar"
+            class="item-owner-avatar"
+          >
 
-    <select id="category" name="category" required>
-      <% [
-				"T-Shirt",
-				"Shirt",
-				"Sweater",
-				"Hoodie",
-				"Jacket",
-				"Coat",
-				"Jeans",
-				"Pants",
-				"Shorts",
-				"Skirt",
-				"Dress",
-				"Shoes",
-				"Accessories",
-				"Other",//其他
-      ].forEach(category => { %>
+        <% } else { %>
 
-        <option
-          value="<%= category %>"
-          <%= item.category === category ? "selected" : "" %>
-        >
-          <%= category %>
-        </option>
+          <div class="item-owner-avatar-fallback">
+            <%= currentUser && currentUser.username
+              ? currentUser.username.charAt(0).toUpperCase()
+              : "U"
+            %>
+          </div>
 
-      <% }) %>
-    </select>
+        <% } %>
 
-    <label for="size">Size</label>
+        <div class="item-owner-text">
 
-    <input
-      id="size"
-      name="size"
-      type="text"
-      value="<%= item.size %>"
-      required
-    >
+          <span class="item-owner-name">
+            Owner:
+            <strong>
+              <%= currentUser && currentUser.username
+                ? currentUser.username
+                : "Owner"
+              %>
+            </strong>
+          </span>
 
-    <label for="color">Color</label>
+          <span class="item-owner-rating">
+            Editing:
+            <strong>
+              <%= item.title %>
+            </strong>
+          </span>
 
-    <input
-      id="color"
-      name="color"
-      type="text"
-      value="<%= item.color %>"
-      required
-    >
+        </div>
 
-    <label for="brand">Brand</label>
+      </div>
 
-    <input
-      id="brand"
-      name="brand"
-      type="text"
-      value="<%= item.brand %>"
-    >
-
-    <label for="condition">Condition</label>
-
-    <select id="condition" name="condition" required>
-      <% [
-				"New With Tags",
-				"New Without Tags",
-				"Like New",
-				"Good",
-				"Fair",
-				"Poor",
-      ].forEach(condition => { %>
-
-        <option
-          value="<%= condition %>"
-          <%= item.condition === condition ? "selected" : "" %>
-        >
-          <%= condition %>
-        </option>
-
-      <% }) %>
-    </select>
-
-    <label for="imageUrl">Image URL</label>
-
-    <input
-      id="imageUrl"
-      name="imageUrl"
-      type="url"
-      value="<%= item.imageUrl %>"
-    >
-
-    <label for="rentalPrice">Rental Price</label>
-
-    <input
-      id="rentalPrice"
-      name="rentalPrice"
-      type="number"
-      min="0"
-      step="0.01"
-      value="<%= item.rentalPrice %>"
-    >
-
-    <label for="isAvailable">Availability</label>
-
-    <select id="isAvailable" name="isAvailable">
-      <option
-        value="true"
-        <%= item.isAvailable ? "selected" : "" %>
+      <a
+        href="/items/<%= item._id %>"
+        class="item-detail-back"
       >
-        Available
-      </option>
+        Back to Detail
+      </a>
 
-      <option
-        value="false"
-        <%= !item.isAvailable ? "selected" : "" %>
-      >
-        Unavailable
-      </option>
-    </select>
+    </section>
 
-    <button type="submit">
-      Save Changes
-    </button>
-  </form>
 
-  <a href="/items/<%= item._id %>">
-    Cancel
-  </a>
+    <form
+      action="/items/<%= item._id %>?_method=PUT"
+      method="POST"
+      class="item-edit-form"
+    >
+
+      <!-- 主体：左图右详情 -->
+      <section class="item-detail-main">
+
+        <!-- 左侧图片区 -->
+        <div class="item-detail-left">
+
+          <div class="item-detail-image-box">
+
+            <% if (item.imageUrl) { %>
+
+              <img
+                src="<%= item.imageUrl %>"
+                alt="<%= item.title %>"
+                class="item-detail-image"
+              >
+
+            <% } else { %>
+
+              <div class="item-detail-image-placeholder">
+                No Image
+              </div>
+
+            <% } %>
+
+          </div>
+
+        </div>
+
+
+        <!-- 右侧编辑区 -->
+        <div class="item-detail-right">
+
+          <div class="item-edit-title-row">
+
+            <label for="title">
+              Clothing Name
+            </label>
+
+            <input
+              id="title"
+              name="title"
+              type="text"
+              value="<%= item.title || "" %>"
+              class="item-edit-title-input"
+              required
+            >
+
+          </div>
+
+
+          <div class="item-detail-price-row edit-price-row">
+
+            <span class="item-detail-price-label">
+              Rental Price
+            </span>
+
+            <div class="item-edit-price-input-wrap">
+
+              <span class="item-edit-dollar">
+                $
+              </span>
+
+              <input
+                id="rentalPrice"
+                name="rentalPrice"
+                type="number"
+                min="0"
+                step="0.01"
+                value="<%= item.rentalPrice %>"
+                class="item-edit-price-input"
+                required
+              >
+
+            </div>
+
+          </div>
+
+
+          <div class="item-detail-info-list item-edit-info-list">
+
+            <p class="item-edit-row textarea-edit-row">
+              <strong>
+                Description:
+              </strong>
+
+              <textarea
+                id="description"
+                name="description"
+                class="item-edit-textarea"
+                required
+              ><%= item.description || "" %></textarea>
+            </p>
+
+
+            <p class="item-edit-row">
+              <strong>
+                Category:
+              </strong>
+
+              <select
+                id="category"
+                name="category"
+                class="item-edit-control"
+                required
+              >
+                <% [
+                  "T-Shirt",
+                  "Shirt",
+                  "Sweater",
+                  "Hoodie",
+                  "Jacket",
+                  "Coat",
+                  "Jeans",
+                  "Pants",
+                  "Shorts",
+                  "Skirt",
+                  "Dress",
+                  "Shoes",
+                  "Accessories",
+                  "Other"
+                ].forEach(category => { %>
+
+                  <option
+                    value="<%= category %>"
+                    <%= item.category === category ? "selected" : "" %>
+                  >
+                    <%= category %>
+                  </option>
+
+                <% }) %>
+              </select>
+            </p>
+
+
+            <p class="item-edit-row">
+              <strong>
+                Size:
+              </strong>
+
+              <input
+                id="size"
+                name="size"
+                type="text"
+                value="<%= item.size || "" %>"
+                class="item-edit-control"
+                required
+              >
+            </p>
+
+
+            <p class="item-edit-row">
+              <strong>
+                Color:
+              </strong>
+
+              <input
+                id="color"
+                name="color"
+                type="text"
+                value="<%= item.color || "" %>"
+                class="item-edit-control"
+                required
+              >
+            </p>
+
+
+            <p class="item-edit-row">
+              <strong>
+                Brand:
+              </strong>
+
+              <input
+                id="brand"
+                name="brand"
+                type="text"
+                value="<%= item.brand || "" %>"
+                class="item-edit-control"
+              >
+            </p>
+
+
+            <p class="item-edit-row">
+              <strong>
+                Condition:
+              </strong>
+
+              <select
+                id="condition"
+                name="condition"
+                class="item-edit-control"
+                required
+              >
+                <% [
+                  "New With Tags",
+                  "New Without Tags",
+                  "Like New",
+                  "Good",
+                  "Fair",
+                  "Poor"
+                ].forEach(condition => { %>
+
+                  <option
+                    value="<%= condition %>"
+                    <%= item.condition === condition ? "selected" : "" %>
+                  >
+                    <%= condition %>
+                  </option>
+
+                <% }) %>
+              </select>
+            </p>
+
+
+            <p class="item-edit-row">
+              <strong>
+                Status:
+              </strong>
+
+              <select
+                id="isAvailable"
+                name="isAvailable"
+                class="item-edit-control"
+              >
+                <option
+                  value="true"
+                  <%= item.isAvailable ? "selected" : "" %>
+                >
+                  Available
+                </option>
+
+                <option
+                  value="false"
+                  <%= !item.isAvailable ? "selected" : "" %>
+                >
+                  Unavailable
+                </option>
+              </select>
+            </p>
+
+
+            <p class="item-edit-row">
+              <strong>
+                Image URL:
+              </strong>
+
+              <input
+                id="imageUrl"
+                name="imageUrl"
+                type="url"
+                value="<%= item.imageUrl || "" %>"
+                class="item-edit-control"
+              >
+            </p>
+
+
+            <p>
+              <strong>
+                Average Rating:
+              </strong>
+
+              <% if (
+                item.ratingCount &&
+                item.ratingCount > 0
+              ) { %>
+
+                <span>
+                  <%= Number(item.averageRating).toFixed(1) %>
+                  / 5
+                </span>
+
+              <% } else { %>
+
+                <span>No ratings yet</span>
+
+              <% } %>
+            </p>
+
+
+            <p>
+              <strong>
+                Review Count:
+              </strong>
+
+              <span>
+                <%= item.ratingCount || 0 %>
+              </span>
+            </p>
+
+
+            <p>
+              <strong>
+                Posted:
+              </strong>
+
+              <% if (item.createdAt) { %>
+                <span>
+                  <%= item.createdAt.toLocaleDateString() %>
+                </span>
+              <% } else { %>
+                <span>Unknown</span>
+              <% } %>
+            </p>
+
+          </div>
+
+
+          <!-- 操作按钮：把原来的 Delete 位置换成 Save -->
+          <div class="item-detail-actions">
+
+            <a
+              href="/items/<%= item._id %>"
+              class="item-action-button secondary"
+            >
+              Cancel
+            </a>
+
+            <button
+              type="submit"
+              class="item-action-button danger"
+            >
+              Save Changes
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </form>
+
+  </main>
+
   <%- include("../partials/footer") %>
+
 </body>
 </html>

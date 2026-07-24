@@ -4369,3 +4369,176 @@ a.book-action-view-button:hover {
 .chat-button {
   background-color: #6f5b5b;
 }
+
+/* ========================================
+   Edit Clothing Item Page
+   Font size: 12px - 14px
+======================================== */
+
+.edit-item-page {
+  padding-bottom: 60px;
+  font-size: 14px;
+}
+
+.edit-item-page * {
+  font-size: inherit;
+}
+
+.item-edit-form {
+  width: 100%;
+}
+
+/* 编辑页标题输入区域 */
+.item-edit-title-row {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.item-edit-title-row label {
+  display: block;
+  margin-bottom: 8px;
+
+  color: #725757;
+  font-size: 14px;
+  font-weight: 700;
+  text-shadow: none;
+}
+
+.item-edit-title-input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 9px 12px;
+
+  color: #604d4d;
+  background: rgba(255, 255, 255, 0.75);
+
+  border: 1px solid rgba(156, 96, 96, 0.24);
+  border-radius: 8px;
+  outline: none;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-shadow: none;
+}
+
+/* 价格区域 */
+.edit-price-row {
+  align-items: center;
+}
+
+.item-edit-price-input-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.item-edit-dollar {
+  color: #d5654c;
+  font-size: 14px;
+  font-weight: 800;
+  text-shadow: none;
+}
+
+.item-edit-price-input {
+  width: 110px;
+  box-sizing: border-box;
+
+  padding: 7px 10px;
+
+  color: #d5654c;
+  background: rgba(255, 255, 255, 0.75);
+
+  border: 1px solid rgba(156, 96, 96, 0.24);
+  border-radius: 8px;
+  outline: none;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  text-shadow: none;
+}
+
+/* 右侧信息编辑列表 */
+.item-edit-info-list .item-edit-row {
+  display: grid;
+  grid-template-columns: 135px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+}
+
+.item-edit-info-list .textarea-edit-row {
+  align-items: start;
+}
+
+.item-edit-info-list strong {
+  font-size: 14px;
+}
+
+.item-edit-info-list span,
+.item-edit-info-list p {
+  font-size: 14px;
+}
+
+/* input / select / textarea */
+.item-edit-control,
+.item-edit-textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  color: #604d4d;
+  background: rgba(255, 255, 255, 0.74);
+
+  border: 1px solid rgba(156, 96, 96, 0.22);
+  border-radius: 7px;
+  outline: none;
+
+  font-family: inherit;
+  font-size: 14px;
+  text-shadow: none;
+}
+
+.item-edit-control {
+  min-height: 34px;
+  padding: 6px 10px;
+}
+
+.item-edit-textarea {
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+/* focus 效果 */
+.item-edit-title-input:focus,
+.item-edit-price-input:focus,
+.item-edit-control:focus,
+.item-edit-textarea:focus {
+  border-color: #b97870;
+  box-shadow: 0 0 0 3px rgba(185, 120, 112, 0.12);
+}
+
+/* 按钮 */
+.edit-item-page .item-action-button {
+  font-size: 13px;
+}
+
+.item-detail-actions button.item-action-button {
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* 顶部 owner bar 也限制在 12-14 */
+.edit-item-page .item-owner-name,
+.edit-item-page .item-owner-rating,
+.edit-item-page .item-detail-back {
+  font-size: 14px;
+}
+
+/* 价格 label */
+.edit-item-page .item-detail-price-label {
+  font-size: 13px;
+}
+
