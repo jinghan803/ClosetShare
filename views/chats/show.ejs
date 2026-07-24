@@ -20,6 +20,36 @@
 
   <main class="wechat-layout">
 
+        <%
+      function formatChatDateTime(value) {
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+          return "";
+        }
+
+        const year = date.getFullYear();
+
+        const month = String(
+          date.getMonth() + 1
+        ).padStart(2, "0");
+
+        const day = String(
+          date.getDate()
+        ).padStart(2, "0");
+
+        const hours = String(
+          date.getHours()
+        ).padStart(2, "0");
+
+        const minutes = String(
+          date.getMinutes()
+        ).padStart(2, "0");
+
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+      }
+    %>
+
     <!-- 左侧聊天列表 -->
     <aside class="wechat-sidebar">
 
@@ -83,10 +113,7 @@
 
                 <span class="wechat-chat-time">
                   <% if (latestMessage) { %>
-                    <%= new Date(latestMessage.createdAt).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit"
-                    }) %>
+                    <%= formatChatDateTime(latestMessage.createdAt) %>
                   <% } else { %>
                     <%= chatRequest.status %>
                   <% } %>
@@ -208,10 +235,7 @@
               </p>
 
               <small>
-                <%= new Date(chatMessage.createdAt).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit"
-                }) %>
+                <%= formatChatDateTime(chatMessage.createdAt) %>
               </small>
 
             </div>

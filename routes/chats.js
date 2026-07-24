@@ -38,8 +38,8 @@ router.get(
         req.params.requestId
       )
         .populate("itemId")
-        .populate("requesterId", "username avatarURL")
-        .populate("ownerId", "username avatarURL");
+        .populate("requesterId", "username avatarUrl")
+        .populate("ownerId", "username avatarUrl");
 
       if (!request) {
         return res.status(404).render("errors/error", {
@@ -99,8 +99,8 @@ router.get(
         ]
       })
         .populate("itemId")
-        .populate("requesterId", "username avatarURL")
-        .populate("ownerId", "username avatarURL");
+        .populate("requesterId", "username avatarUrl")
+        .populate("ownerId", "username avatarUrl");
 
       const relatedRequestIds = relatedRequests.map(
         (relatedRequest) => relatedRequest._id

@@ -4924,3 +4924,18 @@ a.book-action-view-button:hover {
   color: #9c6060;
   font-size: 12px;
 }
+
+/* Chat full datetime display */
+
+.wechat-chat-time {
+  max-width: 95px;
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: right;
+  white-space: normal;
+}
+
+.wechat-bubble small {
+  font-size: 12px;
+  line-height: 1.25;
+}
